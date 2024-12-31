@@ -1,0 +1,43 @@
+;; -*- lexical-binding: t -*-
+
+(defun read-pairwise (filename)
+  (let ((pairs nil)
+	(first nil))
+    (with-temp-buffer
+      (insert-file-contents filename)
+      (while-let ((x (ignore-errors (read (current-buffer)))))
+	(if (null first)
+	    (setq first x)
+	  (progn
+	    (push (cons first x) pairs)
+	    (setq first nil)))))
+    (nreverse pairs)))
+
+(defun puzzle-1a ()
+  (let ((left nil)
+	(right nil)
+	(sum 0))
+    (dolist (p (read-pairwise "data/input-1.txt"))
+      (push (car p) left)
+      (push (cdr p) right))
+    (setq left (sort left :in-place t))
+    (setq right (sort right :in-place t))
+    (while left
+      (let ((l (car left))
+	    (r (car right)))
+	(setq sum (+ sum (abs (- r l))))
+	(setq left (cdr left))
+	(setq right (cdr right))))
+    sum))
+
+(defun puzzle-1b ()
+  (let ((left nil)
+	(right nil)
+	(sum 0))
+    (dolist (p (read-pairwise "data/input-1.txt"))
+      (push (car p) left)
+      (push (cdr p) right))
+    (dolist (l left)
+      (let ((n (seq-count (lambda (x) (eq x l)) right)))
+	(setq sum (+ sum (* l n)))))
+    sum))
