@@ -1,12 +1,12 @@
 ;; -*- lexical-binding: t -*-
 
-(defvar mul-regex "mul(\\([0-9]\\{1,3\\}\\),\\([0-9]\\{1,3\\}\\))")
+(defvar mul-rx "mul(\\([0-9]\\{1,3\\}\\),\\([0-9]\\{1,3\\}\\))")
 
 (defun puzzle-3a ()
   (with-temp-buffer
     (insert-file-contents "data/input-3.txt")
     (let ((sum 0))
-      (while (re-search-forward mul-regex nil t)
+      (while (re-search-forward mul-rx nil t)
 	(let* ((l (car (read-from-string (match-string 1))))
 	       (r (car (read-from-string (match-string 2))))
 	       (product (* l r)))
@@ -25,7 +25,7 @@
 		     (end (re-search-forward "don't()" nil t)))
 		 (when end
 		   (goto-char beg))
-		 (cond ((re-search-forward mul-regex end t)
+		 (cond ((re-search-forward mul-rx end t)
 			(let* ((l (car (read-from-string (match-string 1))))
 			       (r (car (read-from-string (match-string 2))))
 			       (product (* l r)))
