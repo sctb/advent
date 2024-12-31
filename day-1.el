@@ -8,9 +8,8 @@
       (while-let ((x (ignore-errors (read (current-buffer)))))
 	(if (null first)
 	    (setq first x)
-	  (progn
-	    (push (cons first x) pairs)
-	    (setq first nil)))))
+	  (push (cons first x) pairs)
+	  (setq first nil))))
     (nreverse pairs)))
 
 (defun puzzle-1a ()
