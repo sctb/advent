@@ -61,3 +61,40 @@
 		     (memq (cdr r) u)))
 	      rules))
 
+(defun blocked (p rules sorted)
+  (catch :blocked
+    (dolist (r (priors p rules))
+      (unless (memq r sorted)
+	(throw :blocked t)))))
+
+(defun sort-update (u rules)
+  (let ((sorted nil)
+	(waiting nil)
+	(rules (ruled-by u rules))
+	(ordered t))
+    (dolist (p u)
+      (let ((again t))
+	(if (blocked p rules sorted)
+	    (progn
+	      (push p waiting)
+	      (setq ordered nil))
+	  (push p sorted))
+	(while again
+	  (setq again nil)
+	  (dolist (p (reverse waiting))
+	    (unless (blocked p rules sorted)
+	      (push p sorted)
+	      (setq waiting (remq p waiting))
+	      (setq again t))))))
+    (unless ordered
+      (middle sorted))))
+
+(defun puzzle-5b ()
+  (let* ((queue (read-print-queue "data/input-5.txt"))
+	 (rules (car queue))
+	 (updates (cdr queue))
+	 (sum 0))
+    (dolist (u updates)
+      (when-let* ((n (sort-update u rules)))
+	(setq sum (+ sum n))))
+    sum))
