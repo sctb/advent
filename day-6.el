@@ -89,6 +89,7 @@
     (let ((c (look-ahead g guard)))
       (cond ((eq c ?#)
 	     (cons (turn-right dir) (cons i j)))
+	    ((eq c (guard-glyph dir)) :stuck)
 	    (c (step-forward guard))))))
 
 (defun watch-guard (g guard)
@@ -120,8 +121,71 @@
 
 (defun puzzle-6a ()
   (let* ((g (read-grid "data/input-6.txt"))
-	 (w (grid-width g))
-	 (h (grid-height g))
 	 (guard (find-guard g)))
     (trace-guard g guard)
     (count-positions g)))
+
+(defun copy-grid (g)
+  (let* ((h (length g))
+	 (c (make-vector h nil)))
+    (dotimes (i h)
+      (aset c i (copy-sequence (aref g i))))
+    c))
+
+(defun reset-grid (a b)
+  (dotimes (i (grid-width a))
+    (dotimes (j (grid-width a))
+      (gset b i j (gref a i j)))))
+
+(defun guard-stuck (g guard)
+  (let ((stuck nil)
+	;; When the guard is stuck moving back-and-forth along the
+	;; same row or column, ‘next-step’ will not recognize previous
+	;; positions because they will always be in the opposite
+	;; direction.  In these few cases, bail out after a large
+	;; number of iterations
+	(limit 10000))
+    (while (and guard (> limit 0))
+      (mark-guard g guard)
+      (setq guard (next-step g guard))
+      (cond ((consp guard)
+	     (mark-guard g guard))
+	    ((eq guard :stuck)
+	     (setq stuck t)
+	     (setq guard nil)))
+      (setq limit (- limit 1)))
+    (or stuck (<= limit 0))))
+
+(defun obstructions (g x guard)
+  (let* ((w (copy-grid g))
+	 (count 0)
+	 (n 0)
+	 (total (count-positions x))
+	 (progress (make-progress-reporter "Finding obstructions..." 0 total)))
+    (dotimes (i (grid-height w))
+      (dotimes (j (grid-width w))
+	(when (eq (gref x i j) ?X)
+	  ;; reset our working grid for a new trace
+	  (reset-grid g w)
+	  ;; install the new obstacle
+	  (gset w i j ?#)
+	  ;; see if the guard becomes stuck
+	  (when (guard-stuck w guard)
+	    (setq count (+ count 1)))
+	  (progress-reporter-update progress n)
+	  (setq n (+ n 1)))))
+    (progress-reporter-done progress)
+    count))
+
+(defun puzzle-6b ()
+  (let* ((g (read-grid "data/input-6.txt"))
+	 (x (copy-grid g))
+	 (guard (find-guard g)))
+    ;; trace the guard's path to determine possible positions to
+    ;; obstruct (although obstructions cause new pathways, any
+    ;; potential obstruction must be along the original path
+    (trace-guard x guard)
+    ;; restore the original guard ^ because "The new obstruction can't
+    ;; be placed at the guard's starting position..."
+    (mark-guard x guard)
+    (obstructions g x guard)))
