@@ -1,10 +1,10 @@
 ;; -*- lexical-binding: t -*-
 
-(defun read-pairwise (filename)
+(defun read-pairwise (file)
   (let ((pairs nil)
 	(first nil))
     (with-temp-buffer
-      (insert-file-contents filename)
+      (insert-file-contents file)
       (while-let ((x (ignore-errors (read (current-buffer)))))
 	(if (null first)
 	    (setq first x)

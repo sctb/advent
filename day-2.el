@@ -1,9 +1,9 @@
 ;; -*- lexical-binding: t -*-
 
-(defun read-lines (filename)
+(defun read-lines (file)
   (let ((lines nil))
     (with-temp-buffer
-      (insert-file-contents filename)
+      (insert-file-contents file)
       (while (not (eobp))
 	(let ((beg (point)))
 	  (move-end-of-line nil)

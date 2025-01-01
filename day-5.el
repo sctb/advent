@@ -6,11 +6,11 @@
 (defvar rule-rx "\\([0-9]\\{2\\}\\)|\\([0-9]\\{2\\}\\)$")
 (defvar update-rx "\\([0-9]\\{2\\},?\\)+")
 
-(defun read-print-queue (filename)
+(defun read-print-queue (file)
   (let ((rules nil)
 	(updates nil))
     (with-temp-buffer
-      (insert-file-contents filename)
+      (insert-file-contents file)
       (while (re-search-forward rule-rx nil t)
 	(let ((p1 (sread (match-string 1)))
 	      (p2 (sread (match-string 2))))

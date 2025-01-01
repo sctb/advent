@@ -1,8 +1,8 @@
 ;; -*- lexical-binding: t -*-
 
-(defun read-grid (filename)
+(defun read-grid (file)
   (with-temp-buffer
-    (insert-file-contents filename)
+    (insert-file-contents file)
     (let* ((w (1- (line-end-position)))
 	   (h (line-number-at-pos (1- (point-max))))
 	   (g (make-grid h w)))
