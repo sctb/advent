@@ -77,7 +77,7 @@
 
 (defun antenna-pairs (a)
   (let ((pairs nil))
-    (maphash (lambda (c l)
+    (maphash (lambda (_ l)
 	       (setq pairs (append pairs (combine l))))
 	     a)
     pairs))
