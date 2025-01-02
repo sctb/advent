@@ -109,3 +109,26 @@
     (dolist (p (antenna-pairs a))
       (mark-antinodes p x))
     (count-antinodes x)))
+
+(defun antipoints-2 (n m factor)
+  (let ((d (- n m)))
+    (cons (+ n (* d factor)) (- m (* d factor)))))
+
+(defun mark-antinodes-2 (p x)
+  (let* ((a (car p))
+	 (b (cdr p)))
+    ;; rather than thinking too much about bounds, just keep
+    ;; increasing the number of factors until the result converges
+    (dotimes (f 60)
+      (let ((c (antipoints-2 (car a) (car b) f))
+	    (d (antipoints-2 (cdr a) (cdr b) f)))
+	(gset x (car c) (car d) ?#)
+	(gset x (cdr c) (cdr d) ?#)))))
+
+(defun puzzle-8b ()
+  (let* ((g (read-grid "data/input-8.txt"))
+	 (x (make-grid (grid-height g) (grid-width g)))
+	 (a (antennas g)))
+    (dolist (p (antenna-pairs a))
+      (mark-antinodes-2 p x))
+    (count-antinodes x)))
