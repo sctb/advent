@@ -161,7 +161,7 @@
 	 (count 0)
 	 (n 0)
 	 (total (count-positions x))
-	 (progress (make-progress-reporter "Finding obstructions..." 0 total)))
+	 (p (make-progress-reporter "Finding obstructions" 0 total)))
     (dotimes (i (grid-height w))
       (dotimes (j (grid-width w))
 	(when (eq (gref x i j) ?X)
@@ -172,9 +172,9 @@
 	  ;; see if the guard becomes stuck
 	  (when (guard-stuck w guard)
 	    (setq count (+ count 1)))
-	  (progress-reporter-update progress n)
+	  (progress-reporter-update p n)
 	  (setq n (+ n 1)))))
-    (progress-reporter-done progress)
+    (progress-reporter-done p)
     count))
 
 (defun puzzle-6b ()
