@@ -29,7 +29,12 @@
   (seq-mapcat #'change-stone stones))
 
 (defun puzzle-11a ()
-  (let ((stones (read-stones "data/input-11.txt")))
-    (dotimes (_ 25)
-      (setq stones (blink stones)))
+  (let* ((stones (read-stones "data/input-11.txt"))
+	 (times 25)
+	 (p (make-progress-reporter "Blinking" 0 times)))
+    (dotimes (i times)
+      (setq stones (blink stones))
+      (progress-reporter-update p i))
+    (progress-reporter-done p)
     (length stones)))
+
