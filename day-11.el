@@ -38,3 +38,20 @@
     (progress-reporter-done p)
     (length stones)))
 
+(defun cc (file)
+  (let ((result (call-process "cc" nil nil nil file)))
+    (eq result 0)))
+
+(defun puzzle-11b ()
+  (let ((file "c/11b.c"))
+    (when (cc file)
+      (let ((output (shell-command-to-string "./a.out")))
+	(read output)))))
+
+;; 20 ⇒ 24809     (max 400481269760)
+;; 30 ⇒ 1607523   (max 409526509568)
+;; 40 ⇒ 104986693 (max 409526509568)
+;; 50 ⇒ ~6824135045
+;; 60 ⇒ ~443568777925
+;; 70 ⇒ ~28831970565125
+;; 80 ⇒ ~1874078086733125
