@@ -159,15 +159,14 @@
 
 (defun mark-side (c dir i j g x)
   ;; after counting one boundary between regions, mark all of the
-  ;; plots along its edge as having been accounted for
+  ;; plots along its edge as accounted for
   (let ((next (deltas (scanwise dir))))
-    ;; move within the current region...
+    ;; move within the current region along the current edge...
     (while (and (eq c (gref g i j))
 		;; ... as long as the border holds
 		(not (eq c (look g i j dir))))
       (let ((dirs (gref x i j)))
 	(gset x i j (cons dir dirs)))
-      ;; (message "MARK %c %s %s %s" c i j (gref x i j))
       (setq i (+ i (car next)))
       (setq j (+ j (cdr next))))))
 
@@ -179,12 +178,9 @@
 	(dolist (border (borders i j))
 	  (pcase-let ((`(,dir ,n ,m) border))
 	    (let ((d (gref g n m)))
-	      ;; (message "%c %s %s %c" c plot dir (or d ?.))
 	      (unless (or (eq d c) (memq dir (gref x i j)))
 		(mark-side c dir i j g x)
-		(setf count (+ count 1))
-		;; (message "COUNT %c %s" c count)
-		))))))
+		(setf count (+ count 1))))))))
     count))
 
 (defun discounted-price (c plots g x)
