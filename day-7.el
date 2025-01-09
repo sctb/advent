@@ -1,8 +1,5 @@
 ;; -*- lexical-binding: t -*-
 
-(defun sread (string)
-  (car (read-from-string string)))
-
 (defun read-equations (file)
   (let ((equations nil))
     (with-temp-buffer
@@ -10,8 +7,8 @@
       (while (not (eobp))
 	(let* ((line (buffer-substring (point) (line-end-position)))
 	       (split (split-string line ":"))
-	       (value (sread (car split)))
-	       (numbers (sread (format "(%s)" (cadr split)))))
+	       (value (read (car split)))
+	       (numbers (read (format "(%s)" (cadr split)))))
 	  (push (cons value numbers) equations))
 	(forward-line)))
     (nreverse equations)))

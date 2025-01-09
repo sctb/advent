@@ -1,8 +1,5 @@
 ;; -*- lexical-binding: t -*-
 
-(defun sread (string)
-  (car (read-from-string string)))
-
 (defvar rule-rx "\\([0-9]\\{2\\}\\)|\\([0-9]\\{2\\}\\)$")
 (defvar update-rx "\\([0-9]\\{2\\},?\\)+")
 
@@ -12,15 +9,15 @@
     (with-temp-buffer
       (insert-file-contents file)
       (while (re-search-forward rule-rx nil t)
-	(let ((p1 (sread (match-string 1)))
-	      (p2 (sread (match-string 2))))
+	(let ((p1 (read (match-string 1)))
+	      (p2 (read (match-string 2))))
 	  (push (cons p1 p2) rules)))
       (re-search-forward "^$")
       (forward-line)
       (while (looking-at update-rx)
 	(let* ((line (buffer-substring (point) (line-end-position)))
 	       (split (split-string line ","))
-	       (update (mapcar #'sread split)))
+	       (update (mapcar #'read split)))
 	  (push update updates))
 	(forward-line)))
     (cons (nreverse rules) (nreverse updates))))
