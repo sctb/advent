@@ -23,9 +23,9 @@
 	  (push machine machines)))
       (nreverse machines))))
 
-(defun max-times (a p)
-  (min (/ (car p) (car a))
-       (/ (cdr p) (cdr a))
+(defun max-times (x p)
+  (min (/ (car p) (car x))
+       (/ (cdr p) (cdr x))
        ;; "no more than 100 times"
        100))
 
@@ -60,13 +60,53 @@
 
 (defun puzzle-13a ()
   (let* ((machines (read-machines "data/input-13.txt"))
-	 (cost 0)
-	 (n 0)
-	 (p (make-progress-reporter "Searching" 0 (length machines))))
+	 (cost 0))
     (dolist (machine machines)
       (when-let* ((c (play machine)))
-	(setq cost (+ cost c)))
-      (setq n (+ n 1))
-      (progress-reporter-update p n))
-    (progress-reporter-done p)
+	(setq cost (+ cost c))))
+    cost))
+
+;; Button A: X+94, Y+34
+;; Button B: X+22, Y+67
+;; Prize: X=8400, Y=5400
+
+;; 94x + 22y = 8400
+;; 34x + 67y = 5400
+
+(defun fudge (n)
+  (let ((m (round n)))
+    (cond ((= n m) m)
+	  ((< (abs (- n m)) 0.00000001) m)
+	  (t nil))))
+
+(defun solve (a b p)
+  (pcase-let ((`(,ax . ,ay) a)
+	      (`(,bx . ,by) b)
+	      (`(,px . ,py) p))
+    (let ((determinant (float (- (* ax by) (* ay bx)))))
+      (unless (= (fudge determinant) 0)
+	(let ((na (fudge (/ (- (* by (float px))
+			       (* bx (float py)))
+			    determinant)))
+	      (nb (fudge (/ (- (* ax (float py))
+			       (* ay (float px)))
+			    determinant))))
+	  (when (and na nb)
+	    (+ (* na 3) nb)))))))
+
+(defun play-hard (machine)
+  (let* ((p (alist-get 'p machine))
+	 (a (alist-get 'a machine))
+	 (b (alist-get 'b machine)))
+    (pcase-let* ((`(,x . ,y) p))
+      (let ((x (+ x 10000000000000))
+	    (y (+ y 10000000000000)))
+	(solve a b (cons x y))))))
+
+(defun puzzle-13b ()
+  (let* ((machines (read-machines "data/input-13.txt"))
+	 (cost 0))
+    (dolist (machine machines)
+      (when-let* ((c (play-hard machine)))
+	(setq cost (+ cost c))))
     cost))
