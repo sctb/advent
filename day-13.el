@@ -66,13 +66,6 @@
 	(setq cost (+ cost c))))
     cost))
 
-;; Button A: X+94, Y+34
-;; Button B: X+22, Y+67
-;; Prize: X=8400, Y=5400
-
-;; 94x + 22y = 8400
-;; 34x + 67y = 5400
-
 (defun fudge (n)
   (let ((m (round n)))
     (cond ((= n m) m)
@@ -83,14 +76,14 @@
   (pcase-let ((`(,ax . ,ay) a)
 	      (`(,bx . ,by) b)
 	      (`(,px . ,py) p))
-    (let ((determinant (float (- (* ax by) (* ay bx)))))
-      (unless (= (fudge determinant) 0)
+    (let ((det (float (- (* ax by) (* ay bx)))))
+      (unless (= (fudge det) 0)
 	(let ((na (fudge (/ (- (* by (float px))
 			       (* bx (float py)))
-			    determinant)))
+			    det)))
 	      (nb (fudge (/ (- (* ax (float py))
 			       (* ay (float px)))
-			    determinant))))
+			    det))))
 	  (when (and na nb)
 	    (+ (* na 3) nb)))))))
 
