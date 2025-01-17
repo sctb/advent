@@ -75,7 +75,7 @@
       (let ((output (shell-command-to-string "./a.out")))
 	(read output)))))
 
-(defun symmetrical-p (robots bounds)
+(defun symmetrical-n (robots bounds)
   (let* ((x (car bounds))
 	 (x‾ (/ (1- x) 2))
 	 (track (make-hash-table)))
@@ -90,15 +90,21 @@
 		;; remove symmetrical points from the tracking table
 		(remhash key track)
 	      (puthash key t track))))))
-    (= (hash-table-count track) 0)))
+    (hash-table-count track)))
+
+(defun symmetrical-p (robots bounds)
+  (= (symmetrical-n robots bounds) 0))
+
+(defun symmetrical-ish (robots bounds)
+  (< (symmetrical-n robots bounds) 100))
 
 (defun puzzle-14b ()
   (let* ((robots (read-robots "data/input-14.txt"))
 	 (bounds '(101 . 103))
 	 (i 0)
-	 (max 10000000)
+	 (max 1000000)
 	 (p (make-progress-reporter "Simulating" i max)))
-    (while (and (< i max) (not (symmetrical-p robots bounds)))
+    (while (and (< i max) (not (symmetrical-ish robots bounds)))
       (simulate robots bounds 1)
       (setq i (1+ i))
       (progress-reporter-update p i))
@@ -106,13 +112,12 @@
     (and (< i max) i)))
 
 (defun convert-robots ()
+  "Convenience function for generating C struct literals"
   (interactive)
   (while (re-search-forward p-rx nil t)
     (replace-match "{\\1, \\2},")
     (re-search-forward v-rx)
     (replace-match "{\\1, \\2}")))
-
-;; TODO: create tree, generate new robots
 
 (defun read-grid (file)
   (with-temp-buffer
@@ -172,6 +177,10 @@
 	  (push `((,x . ,y)) robots))))
     robots))
 
+(defun insert-robots-c (robots)
+  (dolist (r robots)
+    (insert (format "  {{%d, %d}, {0, 0}},\n" (caar r) (cdar r)))))
+
 (defun mirror ()
   (interactive)
   (save-excursion
@@ -183,6 +192,6 @@
 
 (defun puzzle-14x ()
   (let* ((g (read-grid "data/tree-14.txt"))
-	 (bounds (cons (grid-width g) (grid-height g)))
+	 ;; (bounds (cons (grid-width g) (grid-height g)))
 	 (robots (wake-robots g)))
-    (symmetrical-p robots bounds)))
+    (insert-robots-c robots)))

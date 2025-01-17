@@ -566,7 +566,7 @@ int main(int argc, char *argv[]) {
 	mirror[j] = 1; m++;
       }
     }
-    if (m == 0) {
+    if (m < 150) {
       printf("⌣ %lu\n", i);
       return 0;
     }
