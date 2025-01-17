@@ -60,12 +60,20 @@
     factor))
 
 (defun puzzle-14a ()
-  (let (;; (robots (read-robots "data/example-14.txt"))
-	;; (bounds '(11 . 7))
-	(robots (read-robots "data/input-14.txt"))
+  (let ((robots (read-robots "data/input-14.txt"))
 	(bounds '(101 . 103)))
     (simulate robots bounds 100)
     (safety-factor robots bounds)))
+
+(defun cc (file)
+  (let ((result (call-process "cc" nil nil nil file)))
+    (eq result 0)))
+
+(defun puzzle-14ac ()
+  (let ((file "c/14a.c"))
+    (when (cc file)
+      (let ((output (shell-command-to-string "./a.out")))
+	(read output)))))
 
 (defun symmetrical-p (robots bounds)
   (let* ((x (car bounds))
@@ -103,3 +111,78 @@
     (replace-match "{\\1, \\2},")
     (re-search-forward v-rx)
     (replace-match "{\\1, \\2}")))
+
+;; TODO: create tree, generate new robots
+
+(defun read-grid (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (let* ((w (1- (line-end-position)))
+	   (h (line-number-at-pos (1- (point-max))))
+	   (g (make-grid h w)))
+      (dotimes (i h)
+	(let ((s (buffer-substring (point) (line-end-position))))
+	  (dotimes (j w)
+	    (gset g i j (aref s j)))
+	  (forward-line)))
+      g)))
+
+(defun make-grid (h w &optional blank)
+  (let ((g (make-vector h nil)))
+    (dotimes (i h)
+      (aset g i (make-vector w (unless blank ?.))))
+    g))
+
+(defun count-grid (g c)
+  (let ((count 0))
+    (dotimes (i (grid-height g))
+      (dotimes (j (grid-width g))
+	(when (eq (gref g i j) c)
+	  (setq count (+ count 1)))))
+    count))
+
+(defun grid-height (g)
+  (length g))
+
+(defun grid-width (g)
+  (length (aref g 0)))
+
+(defun insert-grid (g)
+  (seq-do (lambda (r) (seq-do #'insert r) (insert ?\n)) g))
+
+(defun gset (g i j v)
+  "Ignores out-of-bounds references"
+  (when (and (>= i 0) (< i (length g)))
+    (let ((r (aref g i)))
+      (when (and (>= j 0) (< j (length r)))
+	(aset r j v)))))
+
+(defun gref (g i j)
+  "Returns nil for out-of-bounds references"
+  (when (and (>= i 0) (< i (length g)))
+    (let ((r (aref g i)))
+      (when (and (>= j 0) (< j (length r)))
+	(aref r j)))))
+
+(defun wake-robots (g)
+  (let ((robots nil))
+    (dotimes (y (grid-height g))
+      (dotimes (x (grid-width g))
+	(when (eq (gref g y x) ?*)
+	  (push `((,x . ,y)) robots))))
+    robots))
+
+(defun mirror ()
+  (interactive)
+  (save-excursion
+    (while (not (eobp))
+      (let ((line (buffer-substring (point) (line-end-position))))
+	(goto-char (line-end-position))
+	(insert (substring (reverse line) 1))
+	(forward-line)))))
+
+(defun puzzle-14x ()
+  (let* ((g (read-grid "data/tree-14.txt"))
+	 (bounds (cons (grid-width g) (grid-height g)))
+	 (robots (wake-robots g)))
+    (symmetrical-p robots bounds)))

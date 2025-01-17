@@ -5,6 +5,7 @@
 #define X	101
 #define XM	50
 #define Y	103
+#define YM	51
 
 struct pos {
   int x;
@@ -526,15 +527,6 @@ static struct robot robots[] = {
   {{88, 66}, {-39, -81}}
 };
 
-static char mirror[X*Y];
-
-static int reflection(struct robot *r) {
-  int k;
-  k = abs(XM - r->p.x);
-  if (k == 0) return -1;
-  return k + (r->p.y * X);
-}
-
 static void simulate1(struct robot *r) {
   int x, y;
   x = (r->p.x + r->v.x) % X;
@@ -543,34 +535,34 @@ static void simulate1(struct robot *r) {
   r->p.y = y >= 0 ? y : Y + y;
 }
 
+static char inq1(struct robot *r) {
+  return (r->p.x >= 0) && (r->p.x < XM) && (r->p.y >= 0) && (r->p.y < YM);
+}
+
+static char inq2(struct robot *r) {
+  return (r->p.x >= XM+1) && (r->p.x < X) && (r->p.y >= 0) && (r->p.y < YM);
+}
+
+static char inq3(struct robot *r) {
+  return (r->p.x >= 0) && (r->p.x < XM) && (r->p.y >= YM+1) && (r->p.y < Y);
+}
+
+static char inq4(struct robot *r) {
+  return (r->p.x >= XM+1) && (r->p.x < X) && (r->p.y >= YM+1) && (r->p.y < Y);
+}
+
 int main(int argc, char *argv[]) {
-  size_t i, r;
-  int j, m;
-  for (i = 1; i < 10000000000; i++) {
-    if ((i % 1000000) == 0) {
-      printf(".");
-      fflush(stdout);
-    }
-    memset(mirror, 0, sizeof(mirror));
-    for (r = 0, m = 0; r < nrobots; r++) {
+  size_t r, i;
+  int q1, q2, q3, q4;
+  for (i = 0; i < 100; i++)
+    for (r = 0; r < nrobots; r++)
       simulate1(robots+r);
-      j = reflection(robots+r);
-      /* skip centerpoint */
-      if (j < 0) continue;
-      /* bail if there's no way to reach symmetry */
-      if (m > (nrobots - r)) break;
-      /* otherwise add this index or remove it */
-      if (mirror[j]) {
-	mirror[j] = 0; m--;
-      } else {
-	mirror[j] = 1; m++;
-      }
-    }
-    if (m == 0) {
-      printf("⌣ %lu\n", i);
-      return 0;
-    }
+  for (r = 0, q1 = 0, q2 = 0, q3 = 0, q4 = 0; r < nrobots; r++) {
+    if (inq1(robots+r)) { q1++; continue; }
+    if (inq2(robots+r)) { q2++; continue; }
+    if (inq3(robots+r)) { q3++; continue; }
+    if (inq4(robots+r)) { q4++; continue; }
   }
-  printf("⌢\n");
-  return 1;
+  printf("%d\n", q1*q2*q3*q4);
+  return 0;
 }
