@@ -77,10 +77,11 @@
 	       ;; generate a unique key for each (x, y) point
 	       ;; reflected around the x midpoint
 	       (key (+ rx (* ry x))))
-	  (if (gethash key track)
-	      ;; remove symmetrical points from the tracking table
-	      (remhash key track)
-	    (puthash key t track)))))
+	  (when (> rx 0) 		; center is always symmetrical
+	    (if (gethash key track)
+		;; remove symmetrical points from the tracking table
+		(remhash key track)
+	      (puthash key t track))))))
     (= (hash-table-count track) 0)))
 
 (defun puzzle-14b ()
@@ -96,3 +97,9 @@
     (progress-reporter-done p)
     (and (< i max) i)))
 
+(defun convert-robots ()
+  (interactive)
+  (while (re-search-forward p-rx nil t)
+    (replace-match "{\\1, \\2},")
+    (re-search-forward v-rx)
+    (replace-match "{\\1, \\2}")))
