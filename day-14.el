@@ -64,3 +64,75 @@
 	(bounds '(101 . 103)))
     (simulate robots bounds 100)
     (safety-factor robots bounds)))
+
+(defun make-grid (h w &optional blank)
+  (let ((g (make-vector h nil)))
+    (dotimes (i h)
+      (aset g i (make-vector w (unless blank ?.))))
+    g))
+
+(defun grid-height (g)
+  (length g))
+
+(defun grid-width (g)
+  (length (aref g 0)))
+
+(defun insert-grid (g)
+  (seq-do (lambda (r) (seq-do #'insert r) (insert ?\n)) g))
+
+(defun gset (g i j v)
+  "Ignores out-of-bounds references"
+  (when (and (>= i 0) (< i (length g)))
+    (let ((r (aref g i)))
+      (when (and (>= j 0) (< j (length r)))
+	(aset r j v)))))
+
+(defun gref (g i j)
+  "Returns nil for out-of-bounds references"
+  (when (and (>= i 0) (< i (length g)))
+    (let ((r (aref g i)))
+      (when (and (>= j 0) (< j (length r)))
+	(aref r j)))))
+
+(defun reset-grid (g)
+  (dotimes (i (grid-height g))
+    (dotimes (j (grid-width g))
+      (gset g i j ?.))))
+
+(defun robot-grid (g robots)
+  (dolist (r robots)
+    (gset g (cdar r) (caar r) ?X)))
+
+(defun suspicious-p (g n)
+  (catch :suspicious
+    (dotimes (i (grid-height g))
+      (let ((last nil))
+	(dotimes (j (grid-width g))
+	  (cond ((eq (gref g i j) ?.)
+		 (setq last nil))
+		((null last)
+		 (setq last j))
+		((> (- j last) n)
+		 (throw :suspicious t))))))))
+
+(defun watch-robots (g robots bounds times)
+  (let* ((again t)
+	 (n 0)
+	 (p (make-progress-reporter "Simulating" n times)))
+    (while (and again (< n times))
+      (reset-grid g)
+      (robot-grid g robots)
+      (simulate robots bounds 1)
+      (when (suspicious-p g 20)
+	(setq again nil))
+      (setq n (1+ n))
+      (progress-reporter-update p n))
+    (progress-reporter-done p)
+    (and (< n times) g)))
+
+(defun puzzle-14b ()
+  (let* ((robots (read-robots "data/input-14.txt"))
+	 (bounds '(101 . 103))
+	 (g (make-grid (cdr bounds) (car bounds))))
+    (when-let* ((x (watch-robots g robots bounds 10000)))
+      (insert-grid x))))
