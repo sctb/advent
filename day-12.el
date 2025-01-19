@@ -30,7 +30,7 @@
     c))
 
 (defun reset-grid (a b)
-  (dotimes (i (grid-width a))
+  (dotimes (i (grid-height a))
     (dotimes (j (grid-width a))
       (gset b i j (gref a i j)))))
 
