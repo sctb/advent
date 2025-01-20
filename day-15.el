@@ -50,6 +50,42 @@
       (when (and (>= j 0) (< j (length r)))
 	(aref r j)))))
 
+(defun insert-grid (g)
+  (seq-do (lambda (r) (seq-do #'insert r) (insert ?\n)) g))
+
+(defun find-robot (g)
+  (catch :found
+    (dotimes (i (grid-height g))
+      (dotimes (j (grid-width g))
+	(when (eq (gref g i j) ?@)
+	  (throw :found (cons i j)))))))
+
+(defun target (i j d)
+  (pcase d
+    (?^ (cons (1- i) j))
+    (?> (cons i (1+ j)))
+    (?v (cons (1+ i) j))
+    (?< (cons i (1- j)))))
+
+(defun scoot (g i j ti tj)
+  (let ((c (gref g i j)))
+    (unless (eq (gref g ti tj) ?.)
+      (error "Bad scoot"))
+    (gset g i j ?.)
+    (gset g ti tj c)))
+
+(defun move (g i j d)
+  "If it is possible to move in direction `d', do it and return non-NIL,
+otherwise do nothing and return NIL"
+  (pcase-let* ((`(,ti . ,tj) (target i j d)))
+    (when (pcase (gref g ti tj)
+	    (?. t)
+	    (?O (move g ti tj d)))
+      (scoot g i j ti tj))))
+
 (defun puzzle-15a ()
   (let ((file "data/example-15.txt"))
-    (read-warehouse file)))
+    (pcase-let* ((`(,g . ,moves) (read-warehouse file))
+		 (`(,i . ,j) (find-robot g)))
+      (dolist (d moves)
+	(move g i j d)))))
