@@ -72,7 +72,8 @@
     (unless (eq (gref g ti tj) ?.)
       (error "Bad scoot"))
     (gset g i j ?.)
-    (gset g ti tj c)))
+    (gset g ti tj c)
+    (cons ti tj)))
 
 (defun move (g i j d)
   "If it is possible to move in direction `d', do it and return non-NIL,
@@ -96,10 +97,11 @@ otherwise do nothing and return NIL"
 
 (defun puzzle-15a ()
   (let ((file "data/input-15.txt"))
-    (pcase-let* ((`(,g . ,moves) (read-warehouse file)))
+    (pcase-let* ((`(,g . ,moves) (read-warehouse file))
+		 (pos (find-robot g)))
       (seq-do (lambda (d)
-		;; FIXME: silly to lose and find the robot each time
-		(pcase-let* ((`(,i . ,j) (find-robot g)))
-		  (move g i j d)))
+		(pcase-let ((`(,i . ,j) pos))
+		  (when-let* ((pos+ (move g i j d)))
+		    (setq pos pos+))))
 	      moves)
       (gps-sum g))))
