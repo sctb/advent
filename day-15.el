@@ -83,9 +83,23 @@ otherwise do nothing and return NIL"
 	    (?O (move g ti tj d)))
       (scoot g i j ti tj))))
 
+(defun gps-sum (g)
+  (let ((sum 0))
+    (dotimes (i (grid-height g))
+      (dotimes (j (grid-width g))
+	(when (eq (gref g i j) ?O)
+	  ;; "The GPS coordinate of a box is equal to 100 times its
+	  ;; distance from the top edge of the map plus its distance
+	  ;; from the left edge of the map"
+	  (setq sum (+ sum (+ (* 100 i) j))))))
+    sum))
+
 (defun puzzle-15a ()
-  (let ((file "data/example-15.txt"))
-    (pcase-let* ((`(,g . ,moves) (read-warehouse file))
-		 (`(,i . ,j) (find-robot g)))
-      (dolist (d moves)
-	(move g i j d)))))
+  (let ((file "data/input-15.txt"))
+    (pcase-let* ((`(,g . ,moves) (read-warehouse file)))
+      (seq-do (lambda (d)
+		;; FIXME: silly to lose and find the robot each time
+		(pcase-let* ((`(,i . ,j) (find-robot g)))
+		  (move g i j d)))
+	      moves)
+      (gps-sum g))))
