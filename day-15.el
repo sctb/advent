@@ -88,7 +88,7 @@ otherwise do nothing and return NIL"
   (let ((sum 0))
     (dotimes (i (grid-height g))
       (dotimes (j (grid-width g))
-	(when (eq (gref g i j) ?O)
+	(when (memq (gref g i j) '(?O ?\[))
 	  ;; "The GPS coordinate of a box is equal to 100 times its
 	  ;; distance from the top edge of the map plus its distance
 	  ;; from the left edge of the map"
@@ -160,7 +160,7 @@ otherwise do nothing and return NIL"
     (scoot g i j ti tj)))
 
 (defun puzzle-15b ()
-  (let ((file "data/example-15.txt"))
+  (let ((file "data/input-15.txt"))
     (pcase-let* ((`(,g . ,moves)
 		  (read-warehouse file))
 		 (g (scale-warehouse g))
@@ -171,6 +171,4 @@ otherwise do nothing and return NIL"
 		    (execute-move g i j d)
 		    (setq pos (target i j d)))))
 	      moves)
-      (insert-grid g)
-      ;; (gps-sum g)
-      )))
+      (gps-sum g))))
