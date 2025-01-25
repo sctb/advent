@@ -16,7 +16,7 @@
 (defun make-grid (h w &optional blank)
   (let ((g (make-vector h nil)))
     (dotimes (i h)
-      (aset g i (make-vector w (unless blank ?.))))
+      (aset g i (make-vector w (or blank ?.))))
     g))
 
 (defun grid-like (g &optional blank)
