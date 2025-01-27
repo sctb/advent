@@ -52,6 +52,13 @@
 	(when (eq (gref g i j) ?S)
 	  (throw :found (list :east 0 (cons i j))))))))
 
+(defun find-end (g)
+  (catch :found
+    (dotimes (i (grid-height g))
+      (dotimes (j (grid-width g))
+	(when (eq (gref g i j) ?E)
+	  (throw :found (cons i j)))))))
+
 (defun score (a b)
   (if (eq a b)
       1
@@ -84,9 +91,17 @@
 	    (when (< s (gref x i j))
 	      (push (list d s (cons i j)) moves))))))))
 
+(defun step (g x deer move)
+  ;; if the target tile has a lower score than our current score, bail
+  ;; otherwise, take the step
+  ;; if the step is not the end (E), generate new moves and recurse
+  1)
+
 (defun puzzle-16a ()
   (let* ((g (read-grid "data/example-16.txt"))
-	 (max (expt 2 32))
-	 (x (grid-like g max))
-	 (deer (find-reindeer g)))
-    (moves g x deer)))
+	 (x (grid-like g (expt 2 32)))
+	 (deer (find-reindeer g))
+	 (end (find-end g)))
+    (dolist (move (moves g x deer))
+      (step g x deer move))
+    (gref x (car end) (cdr end))))
