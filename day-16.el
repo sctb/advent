@@ -99,7 +99,7 @@
 	  (step g x move))))))
 
 (defun puzzle-16a ()
-  (let* ((g (read-grid "data/example-16.txt"))
+  (let* ((g (read-grid "data/input-16.txt"))
 	 (x (grid-like g (expt 2 32)))
 	 (deer (find-reindeer g))
 	 (end (find-end g)))
