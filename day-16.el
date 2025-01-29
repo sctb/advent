@@ -99,6 +99,8 @@
 	  (step g x move))))))
 
 (defun puzzle-16a ()
+  ;; Needed to set (setq max-lisp-eval-depth 5000) to avoid a stack
+  ;; overflow with the larger puzzle input
   (let* ((g (read-grid "data/input-16.txt"))
 	 (x (grid-like g (expt 2 32)))
 	 (deer (find-reindeer g))
