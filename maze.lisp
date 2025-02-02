@@ -81,18 +81,14 @@
 	      (push (list to score pos) moves))))))
     moves))
 
-(defvar *token* 0)
-(defvar *finishers* nil)
+(defun escaped-p (maze pos)
+  (= (gref maze pos) (char-code #\E)))
 
-(defun finish (score)
-  (let* ((token (incf *token*))
-	 (receipt (cons token score)))
-    (push receipt *finishers*)
-    receipt))
-
-(defun register (paths pos receipt)
-  (gset paths pos (car receipt))
-  receipt)
+(defun mark-path (paths pos score)
+  (let ((prev (gref paths pos)))
+    (when (and score (or (= prev 0) (< score prev)))
+      (gset paths pos score)))
+  score) 
 
 (defun escape (maze scores paths deer)
   (destructuring-bind (dir score pos) deer
@@ -100,43 +96,30 @@
     (let ((par (gref scores pos)))
       (unless (> score (+ 1000 par))
 	(gset scores pos (min score par))
-	(if (eq (gref maze pos) (char-code #\E))
-	    (register paths pos (finish score))
-	    (let ((best nil))
-	      (loop for deer in (moves maze deer) do
-	        (let ((receipt (escape maze scores paths deer)))
-		  (when receipt
-		    (register paths (elt deer 2) receipt)
-		    (when (or (null best)
-			      (< (cdr receipt) (cdr best)))
-		      (setq best receipt)))))
-	      best))))))
+	(if (escaped-p maze pos)
+	    (mark-path paths pos score)
+	    (let ((top nil))
+	      (dolist (deer (moves maze deer))
+	        (let ((score (escape maze scores paths deer)))
+		  (when (and score (or (null top) (< score top)))
+		    (setq top score))))
+	      (mark-path paths pos top)))))))
 
-(defun winners (best)
-  (loop for (token . score) in *finishers*
-	when (<= score best)
-	collect token))
-
-(defun count-winners (paths best)
-  (let ((count 1) ; include starting tile
-	(winners (winners best)))
+(defun winners (paths score)
+  (let ((count 0))
     (destructuring-bind (n m) (array-dimensions paths)
       (loop for i from 0 below n do
-        (loop for j from 0 below m
-	      when (member (aref paths i j) winners)
-	      do (incf count))))
+        (loop for j from 0 below m do
+          (when (= (aref paths i j) score)
+            (incf count)))))
     count))
 
 (defun solve ()
-  (let* ((maze (read-maze "data/input-16.txt"))
+  (let* ((maze (read-maze "input-16.txt"))
 	 (scores (make-scores maze))
 	 (paths (make-paths maze))
 	 (deer (list :east 0 (find-reindeer maze)))
-	 (end (find-end maze))
-	 (*finishers* nil)
-	 (*token* 0))
+	 (end (find-end maze)))
     (escape maze scores paths deer)
-    (let ((best (gref scores end)))
-      (count-winners paths best))))
+    (winners paths (gref scores end))))
 
-;; ⇒ 452 too low
