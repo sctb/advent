@@ -122,4 +122,3 @@
 	 (end (find-end maze)))
     (escape maze scores paths deer)
     (winners paths (gref scores end))))
-
