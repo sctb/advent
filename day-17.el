@@ -91,30 +91,10 @@
 (defun micro-cdv ()
   (setq comp-regc (common-xdv)))
 
-(defun opcode-name (opcode)
-  (pcase opcode
-    (0 "ADV")
-    (1 "BXL")
-    (2 "BST")
-    (3 "JNZ")
-    (4 "BXC")
-    (5 "OUT")
-    (6 "BDV")
-    (7 "CDV")))
-
-(defun log-inst ()
-  (message "REGISTER A: %s" comp-rega)
-  (message "REGISTER B: %s" comp-regb)
-  (message "REGISTER C: %s" comp-regc)
-  (let ((opcode (elt comp-prog comp-ip)))
-    (message "OPCODE: %s" (opcode-name opcode))))
-
 (defun puzzle-17a ()
-  (load-program "data/example-17.txt")
-  (message "INITIALIZING...")
-  (let ((limit 100))
+  (load-program "data/input-17.txt")
+  (let ((limit 10000))
     (while-let ((opcode (and (> limit 0) (elt comp-prog comp-ip))))
-      (log-inst)
       (cond
        ((eq opcode inst-adv) (micro-adv))
        ((eq opcode inst-bxl) (micro-bxl))
