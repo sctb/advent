@@ -3,6 +3,9 @@
 
 (in-package :comp)
 
+(defmacro while (condition &body body)
+  `(loop while ,condition do ,@body))
+
 (defun read-entry (stream prefix)
   (let ((line (read-line stream nil)))
     (when (and line (> (length line) 0))
@@ -22,6 +25,10 @@
 (defvar *register-c*)
 (defvar *program*)
 
+(defvar *output*)
+(defvar *ip*)
+(defvar *jmp*)
+
 (defun load-program (file)
   (let ((in (open file)))
     (setq *register-a* (read-from-string (read-entry in "Register A: ")))
@@ -35,10 +42,6 @@
     (setq *output* nil)
     (setq *ip* 0)
     (setq *jmp* nil)))
-
-(defvar *output*)
-(defvar *ip*)
-(defvar *jmp*)
 
 (defun literal-operand ()
   (elt *program* (1+ *ip*)))
@@ -97,7 +100,7 @@
 
 (defun puzzle-17a ()
   (load-program "data/input-17.txt")
-  (loop while (< *ip* (length *program*)) do
+  (while (< *ip* (length *program*))
     (let ((opcode (elt *program* *ip*)))
       (cond
 	((eq opcode *opcode-adv*) (micro-adv))
@@ -138,13 +141,13 @@
     (eq (prefix-match out *program*) 'same)))
 
 (defun puzzle-17b ()
-  (load-program "data/example-17b.txt")
-  (let ((rega 0)
+  (load-program "data/input-17.txt")
+  (let ((rega (expt 2 32))
 	(done nil))
-    (loop while (and (< rega 10000000) (not done)) do
-      (reset-program (setq rega (1+ rega)))
-      (let ((limit 10000))
-	(loop while (and (< *ip* (length *program*)) (> limit 0)) do
+    (while (and (not done) (< rega (expt 2 40)))
+      (reset-program (setq rega (+ rega 8)))
+      (let ((bail nil))
+	(while (and (not bail) (< *ip* (length *program*)))
 	  (let ((opcode (elt *program* *ip*)))
 	    (cond
 	      ((eq opcode *opcode-adv*) (micro-adv))
@@ -158,8 +161,6 @@
 	    (if *jmp*
 		(setq *jmp* nil)
 		(setq *ip* (+ *ip* 2)))
-	    (if (astray-p)
-		(setq limit 0)
-		(setq limit (1- limit))))))
+	    (setq bail (astray-p)))))
       (setq done (quine-p)))
     rega))
