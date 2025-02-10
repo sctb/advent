@@ -1,9 +1,9 @@
 ;; -*- lexical-binding: t -*-
 
-(defvar rega-rx "Register A: \\([0-9]+\\)")
-(defvar regb-rx "Register B: \\([0-9]+\\)")
-(defvar regc-rx "Register C: \\([0-9]+\\)")
-(defvar prog-rx "Program: \\([0-9,]+\\)")
+(defconst rega-rx "Register A: \\([0-9]+\\)")
+(defconst regb-rx "Register B: \\([0-9]+\\)")
+(defconst regc-rx "Register C: \\([0-9]+\\)")
+(defconst prog-rx "Program: \\([0-9,]+\\)")
 
 (defun read-reg ()
   (let ((string (match-string 1)))
@@ -46,14 +46,14 @@
 	  ((= arg 6) comp-regc)
 	  ((= arg 7) (error "Reserved combo operand")))))
 
-(defvar inst-adv 0)
-(defvar inst-bxl 1)
-(defvar inst-bst 2)
-(defvar inst-jnz 3)
-(defvar inst-bxc 4)
-(defvar inst-out 5)
-(defvar inst-bdv 6)
-(defvar inst-cdv 7)
+(defconst inst-adv 0)
+(defconst inst-bxl 1)
+(defconst inst-bst 2)
+(defconst inst-jnz 3)
+(defconst inst-bxc 4)
+(defconst inst-out 5)
+(defconst inst-bdv 6)
+(defconst inst-cdv 7)
 
 (defun common-xdv ()
   (let* ((numerator comp-rega)
