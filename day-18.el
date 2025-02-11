@@ -72,16 +72,31 @@
       (setq width (max width (cdr pos))))
     (cons (1+ height) (1+ width))))
 
-(defun drop-bytes (memory positions)
+(defun dimensions/2 (positions)
+  (let ((width 0)
+	(height 0))
+    (dolist (pos positions)
+      (setq height (max height (car pos)))
+      (setq width (max width (cdr pos))))
+    (cons (1+ (/ height 2))
+	  (1+ (/ width 2)))))
+
+(defun offset-pos (pos offset)
+  (pcase-let ((`(,i . ,j) pos))
+    (cons (+ i offset) (+ j offset))))
+
+(defun drop-bytes (memory positions &optional offset)
   (dolist (pos positions)
-    (gset memory pos ?#)))
+    (let ((pos (if offset (offset-pos pos offset) pos)))
+      (gset memory pos ?#))))
 
 (defun around (pos)
   (pcase-let ((`(,i . ,j) pos))
+    ;; try down and right first`
     (list (cons i (1+ j))
+	  (cons (1+ i) j)
 	  (cons (1- i) j)
-	  (cons i (1- j))
-	  (cons (1+ i) j))))
+	  (cons i (1- j)))))
 
 (defun passable (tile)
   (eq tile ?.))
@@ -92,19 +107,28 @@
 	      (around pos)))
 
 (defun step (memory scores score pos end)
-  (unless (> score (gref scores pos))
+  (unless (>= score (gref scores pos))
     (gset scores pos score)
     (unless (equal pos end)
       (dolist (pos (moves memory pos))
 	(step memory scores (1+ score) pos end)))))
 
 (defun puzzle-18a ()
-  (let ((positions (read-positions "data/example-18.txt")))
-    (pcase-let ((`(,height . ,width) (dimensions positions)))
-      (let* ((memory (make-grid height width ?.))
-	     (scores (grid-like memory (expt 2 16)))
+  (let ((positions (read-positions "data/input-18.txt")))
+    (pcase-let ((`(,height . ,width) (dimensions/2 positions)))
+      (let* ((max-lisp-eval-depth 5000)
+	     (memory (make-grid height width ?.))
+	     (scores (grid-like memory (expt 2 32)))
 	     (start (cons 0 0))
-	     (end (cons (1- height) (1- width))))
-	(drop-bytes memory (seq-take positions 12))
+	     (end (cons (1- height) (1- width)))
+	     ;; second run targets the bottom-right quadrant by
+	     ;; applying an offset equal to half the original width
+	     ;; and height: (- (car end))
+	     (offset (- (car end))))
+	(drop-bytes memory (seq-take positions 1024) offset)
 	(step memory scores 0 start end)
 	(gref scores end)))))
+
+;; offset 0:	200
+;; offset -35:	190
+;; total:	390 (too high, also 389)
