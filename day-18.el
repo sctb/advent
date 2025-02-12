@@ -72,15 +72,6 @@
       (setq width (max width (cdr pos))))
     (cons (1+ height) (1+ width))))
 
-(defun dimensions/2 (positions)
-  (let ((width 0)
-	(height 0))
-    (dolist (pos positions)
-      (setq height (max height (car pos)))
-      (setq width (max width (cdr pos))))
-    (cons (1+ (/ height 2))
-	  (1+ (/ width 2)))))
-
 (defun drop-bytes (memory positions)
   (dolist (pos positions)
     (gset memory pos ?#)))
@@ -113,9 +104,11 @@
     (pcase-let ((`(,height . ,width) (dimensions positions)))
       (let* ((max-lisp-eval-depth 5000)
 	     (memory (make-grid height width ?.))
-	     (scores (grid-like memory (expt 2 32)))
+	     (scores (grid-like memory (expt 2 16)))
 	     (start (cons 0 0))
 	     (end (cons (1- height) (1- width))))
 	(drop-bytes memory (seq-take positions 1024))
 	(step memory scores 0 start end)
 	(gref scores end)))))
+
+;; For part 2, manually binary-search for the blocking byte
