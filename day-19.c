@@ -7,14 +7,18 @@ static char tbuf[TSIZE];
 static char dbuf[DSIZE];
 
 #define ISIZE 1024
-static char *towel[ISIZE];
-static char *design[ISIZE];
-
+static const char *towel[ISIZE];
+static const char *design[ISIZE];
 static int ntowels;
 static int ndesigns;
 
+static const char *good[DSIZE];
+static const char *bad[DSIZE];
+static int ngood;
+static int nbad;
+
 static void parse_towels(void) {
-  int n;
+  int n, m;
   char *s;
 
   for(n = 0, s = tbuf; *s != '\0'; n++) {
@@ -77,24 +81,36 @@ int match(const char *prefix, const char *string) {
   return 0;
 }
 
-int possible(char *design) {
-  /*
-   * FIXME: insufficient
-   *
-   * The design needs to be recursive, following through each initial
-   * matching towel, so that all combinations of towels are considered
-   * (not just longest-match-first)
-   */
-  int i, j, n;
-  while (*design != '\0') {
-    for (i = 0, n = 0; n < ntowels; n++) {
-      j = match(towel[n], design);
-      i = j > i ? j : i;
-    }
-    if (i == 0) return 0;
-    design += i;
+int known_good(const char *design) {
+  int i;
+  for (i = 0; i < ngood; i++) {
+    if (good[i] == design) return 1;
   }
-  return i;
+  return 0;
+}
+
+int known_bad(const char *design) {
+  int i;
+  for (i = 0; i < nbad; i++) {
+    if (bad[i] == design) return 1;
+  }
+  return 0;
+}
+
+int possible(const char *design) {
+  int result, i, n;
+  if (*design == '\0') return 1;
+  if (known_good(design)) return 1;
+  if (known_bad(design)) return 0;
+  for (result = 0, i = 0, n = 0; n < ntowels; n++) {
+    i = match(towel[n], design);
+    if (i > 0 && possible(design + i)) {
+      result = 1;
+    }
+  }
+  if (result) good[ngood++] = design;
+  else bad[nbad++] = design;
+  return result;
 }
 
 void puzzle(void) {
