@@ -80,7 +80,7 @@ long known(const char *design) {
   return 0;
 }
 
-int possible(const char *design) {
+long possible(const char *design) {
   long r, k;
   int i, n;
   if (*design == '\0') return 1;
@@ -121,7 +121,3 @@ int main(void) {
   return 0;
 }
 
-/*
-  1555825069 too low (int)
-  5850792365 too low (long)
-*/
