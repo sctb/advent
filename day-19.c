@@ -12,11 +12,10 @@ static const char *design[ISIZE];
 static int ntowels;
 static int ndesigns;
 
-static const char *good[DSIZE];
-static const char *bad[DSIZE];
-static long goodways[DSIZE];
-static int ngood;
-static int nbad;
+#define KSIZE 32768
+static const char *seen[KSIZE];
+static long ways[KSIZE];
+static int nseen;
 
 static void parse_towels(void) {
   char *s;
@@ -73,18 +72,10 @@ int match(const char *prefix, const char *string) {
   return 0;
 }
 
-long known_good(const char *design) {
+long known(const char *design) {
   int i;
-  for (i = 0; i < ngood; i++) {
-    if (good[i] == design) return goodways[i];
-  }
-  return 0;
-}
-
-int known_bad(const char *design) {
-  int i;
-  for (i = 0; i < nbad; i++) {
-    if (bad[i] == design) return 1;
+  for (i = 0; i < nseen; i++) {
+    if (seen[i] == design) return ways[i];
   }
   return 0;
 }
@@ -93,19 +84,16 @@ int possible(const char *design) {
   long r, k;
   int i, n;
   if (*design == '\0') return 1;
-  if ((r = known_good(design))) return r;
-  if (known_bad(design)) return 0;
+  if ((r = known(design))) return r;
   for (r = 0, i = 0, n = 0; n < ntowels; n++) {
     i = match(towel[n], design);
     if (i > 0 && (k = possible(design + i))) {
       r += k;
     }
   }
-  if (r) {
-    good[ngood] = design;
-    goodways[ngood] = r;
-    ngood++;
-  } else bad[nbad++] = design;
+  seen[nseen] = design;
+  ways[nseen] = r;
+  nseen++;
   return r;
 }
 
