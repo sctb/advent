@@ -47,12 +47,6 @@ static void input(const char *path) {
   load(size);
 }
 
-static void dump(void) {
-  size_t y;
-  for (y = 0; y < nrows; y++)
-    printf("%s\n", &map[y * (ncols + 1)]);
-}
-
 static char mapget(struct pos p) {
   return map[(p.y * (ncols + 1)) + p.x];
 }
@@ -85,15 +79,15 @@ static struct pos next(struct pos p) {
   q.y = p.y; q.x = p.x - 1; return q;
 }
 
-static void trace(struct pos start, struct pos end) {
+static void trace(struct pos here, struct pos end) {
   struct pos prev;
   nsteps = -1;
-  while (!there(start, end)) {
-    prev.x = start.x; prev.y = start.y;
-    start = next(start);
+  while (!there(here, end)) {
+    prev.x = here.x; prev.y = here.y;
+    here = next(here);
     steps[++nsteps] = prev;
   }
-  steps[++nsteps] = end;
+  steps[++nsteps] = here;
 }
 
 static void puzzle1(void) {
