@@ -18,8 +18,6 @@ struct pos {
 static struct pos steps[MSIZE];
 static int nsteps;
 
-static int tmpcheats[100];
-
 static void die(const char *msg) {
   perror(msg);
   exit(1);
@@ -68,7 +66,7 @@ static int there(struct pos a, struct pos b) {
 }
 
 static int ontrack(struct pos p) {
-  if (nsteps >= 0 && there(p, steps[nsteps])) return 0;
+  if (nsteps > 0 && there(p, steps[nsteps - 1])) return 0;
   if (mapget(p) == '#') return 0;
   return 1;
 }
@@ -84,13 +82,12 @@ static struct pos next(struct pos p) {
 
 static void trace(struct pos here, struct pos end) {
   struct pos prev;
-  nsteps = -1;
   while (!there(here, end)) {
     prev.x = here.x; prev.y = here.y;
     here = next(here);
-    steps[++nsteps] = prev;
+    steps[nsteps++] = prev;
   }
-  steps[++nsteps] = here;
+  steps[nsteps++] = here;
 }
 
 static int cheatable(struct pos a, struct pos b) {
@@ -103,21 +100,14 @@ static void cheats(void) {
   int n;
   size_t i, j;
   struct pos a, b;
-  for (i = 0; i <= (nsteps - 2); i++)
-    for (j = i + 2; j <= nsteps; j++) {
+  for (n = 0, i = 0; i < (nsteps - 2); i++)
+    for (j = i + 2; j < nsteps; j++) {
       a = steps[i];
       b = steps[j];
-      if (cheatable(a, b))
-	tmpcheats[j - i - 2]++;
+      if (cheatable(a, b) && (j - i - 2) >= 100)
+	n++;
     }
-}
-
-static void dumpcheats(void) {
-  int i, n;
-  for (i = 0; i < 100; i++)
-    if ((n = tmpcheats[i]) > 0) {
-      printf("There are %d cheats that save %d picoseconds.\n", n, i);
-    }
+  printf("%d cheats\n", n);
 }
 
 static void puzzle1(void) {
@@ -126,19 +116,10 @@ static void puzzle1(void) {
   end = findchar('E');
   trace(start, end);
   cheats();
-  dumpcheats();
-  printf("took %d steps\n", nsteps);
 }
 
-/*
-  Cheating: for every step in steps, scan forward looking for steps
-  which differ by only 2 in either X or Y, while the other dimension
-  is the same. The number of picoseconds saved by a cheat is the
-  difference in the indices of the pair of steps
- */
-
 int main(void) {
-  input("data/example-20.txt");
+  input("data/input-20.txt");
   puzzle1();
   return 0;
 }
