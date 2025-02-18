@@ -18,6 +18,8 @@ struct pos {
 static struct pos steps[MSIZE];
 static int nsteps;
 
+static int tmpcheats[100];
+
 static void die(const char *msg) {
   perror(msg);
   exit(1);
@@ -76,7 +78,8 @@ static struct pos next(struct pos p) {
   q.x = p.x; q.y = p.y + 1; if (ontrack(q)) return q;
   q.x = p.x; q.y = p.y - 1; if (ontrack(q)) return q;
   q.y = p.y; q.x = p.x + 1; if (ontrack(q)) return q;
-  q.y = p.y; q.x = p.x - 1; return q;
+  q.y = p.y; q.x = p.x - 1; if (ontrack(q)) return q;
+  die("next"); return p; /* not reached */
 }
 
 static void trace(struct pos here, struct pos end) {
@@ -90,13 +93,49 @@ static void trace(struct pos here, struct pos end) {
   steps[++nsteps] = here;
 }
 
+static int cheatable(struct pos a, struct pos b) {
+  if (a.x == b.x && abs((int)a.y - (int)b.y) == 2) return 1;
+  if (a.y == b.y && abs((int)a.x - (int)b.x) == 2) return 1;
+  return 0;
+}
+
+static void cheats(void) {
+  int n;
+  size_t i, j;
+  struct pos a, b;
+  for (i = 0; i <= (nsteps - 2); i++)
+    for (j = i + 2; j <= nsteps; j++) {
+      a = steps[i];
+      b = steps[j];
+      if (cheatable(a, b))
+	tmpcheats[j - i - 2]++;
+    }
+}
+
+static void dumpcheats(void) {
+  int i, n;
+  for (i = 0; i < 100; i++)
+    if ((n = tmpcheats[i]) > 0) {
+      printf("There are %d cheats that save %d picoseconds.\n", n, i);
+    }
+}
+
 static void puzzle1(void) {
   struct pos start, end;
   start = findchar('S');
   end = findchar('E');
   trace(start, end);
+  cheats();
+  dumpcheats();
   printf("took %d steps\n", nsteps);
 }
+
+/*
+  Cheating: for every step in steps, scan forward looking for steps
+  which differ by only 2 in either X or Y, while the other dimension
+  is the same. The number of picoseconds saved by a cheat is the
+  difference in the indices of the pair of steps
+ */
 
 int main(void) {
   input("data/example-20.txt");
