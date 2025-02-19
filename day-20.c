@@ -17,7 +17,6 @@ struct pos {
 
 static struct pos steps[MSIZE];
 static int nsteps;
-static int tmpcheats[100];
 
 static void die(const char *msg) {
   perror(msg);
@@ -98,46 +97,36 @@ static int cheatable(struct pos a, struct pos b, int ps) {
   return 0;
 }
 
-static void puzzle1(void) {
-  int n, i, j, ps;
+static void cheats(int ps) {
+  int n, i, j, saved;
   struct pos a, b;
-  ps = 2;
   for (n = 0, i = 0; i < (nsteps - 2); i++)
     for (j = i + 2; j < nsteps; j++) {
       a = steps[i];
       b = steps[j];
-      if (cheatable(a, b, ps) && (j - i - ps) >= 100)
+      if ((saved = cheatable(a, b, ps)) && (j - i - saved) >= 100)
 	n++;
     }
   printf("%d cheats\n", n);
 }
 
+static void puzzle1(void) {
+  printf("Part 1: ");
+  cheats(2);
+}
+
 static void puzzle2(void) {
-  int i, j, n, ps, save;
-  struct pos a, b;
-  for (n = 0, i = 0; i < (nsteps - 2); i++)
-    for (j = i + 2; j < nsteps; j++) {
-      a = steps[i];
-      b = steps[j];
-      if ((ps = cheatable(a, b, 20)) &&
-	   (save = (j - i - ps)) >= 50) {
-	tmpcheats[save]++;
-	n++;
-      }
-    }
-  for (i = 0; i < 100; i++)
-    if ((j = tmpcheats[i]) > 0)
-      printf("There are %d cheats that save %d picoseconds.\n", j, i);
-  printf("%d cheats\n", n);
+  printf("Part 2: ");
+  cheats(20);
 }
 
 int main(void) {
   struct pos start, end;
-  input("data/example-20.txt");
+  input("data/input-20.txt");
   start = findchar('S');
   end = findchar('E');
   trace(start, end);
-  /* puzzle1(); */
+  puzzle1();
   puzzle2();
   return 0;
 }
