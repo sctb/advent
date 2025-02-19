@@ -7,24 +7,25 @@
     for (pos.x = 0; pos.x < ncols; pos.x++) \
 
 static char map[MSIZE];
-static size_t ncols;
-static size_t nrows;
+static int ncols;
+static int nrows;
 
 struct pos {
-  size_t x;
-  size_t y;
+  int x;
+  int y;
 };
 
 static struct pos steps[MSIZE];
 static int nsteps;
+static int tmpcheats[100];
 
 static void die(const char *msg) {
   perror(msg);
   exit(1);
 }
 
-static void load(size_t size) {
-  size_t i;
+static void load(int size) {
+  int i;
   for (i = 0; i < size; i++)
     if (map[i] == '\n') {
       ncols = i;
@@ -39,7 +40,7 @@ static void load(size_t size) {
 static void input(const char *path) {
   FILE *file;
   char *read;
-  size_t size;
+  int size;
   file = fopen(path, "r");
   if (file == NULL) die("input file");
   size = fread(map, 1, MSIZE, file);
@@ -90,36 +91,53 @@ static void trace(struct pos here, struct pos end) {
   steps[nsteps++] = here;
 }
 
-static int cheatable(struct pos a, struct pos b) {
-  if (a.x == b.x && abs((int)a.y - (int)b.y) == 2) return 1;
-  if (a.y == b.y && abs((int)a.x - (int)b.x) == 2) return 1;
+static int cheatable(struct pos a, struct pos b, int ps) {
+  int n;
+  n = abs((int)a.x - (int)b.x) + abs((int)a.y - (int)b.y);
+  if (n >= 2 && n <= ps) return n;
   return 0;
 }
 
-static void cheats(void) {
-  int n;
-  size_t i, j;
+static void puzzle1(void) {
+  int n, i, j, ps;
   struct pos a, b;
+  ps = 2;
   for (n = 0, i = 0; i < (nsteps - 2); i++)
     for (j = i + 2; j < nsteps; j++) {
       a = steps[i];
       b = steps[j];
-      if (cheatable(a, b) && (j - i - 2) >= 100)
+      if (cheatable(a, b, ps) && (j - i - ps) >= 100)
 	n++;
     }
   printf("%d cheats\n", n);
 }
 
-static void puzzle1(void) {
-  struct pos start, end;
-  start = findchar('S');
-  end = findchar('E');
-  trace(start, end);
-  cheats();
+static void puzzle2(void) {
+  int i, j, n, ps, save;
+  struct pos a, b;
+  for (n = 0, i = 0; i < (nsteps - 2); i++)
+    for (j = i + 2; j < nsteps; j++) {
+      a = steps[i];
+      b = steps[j];
+      if ((ps = cheatable(a, b, 20)) &&
+	   (save = (j - i - ps)) >= 50) {
+	tmpcheats[save]++;
+	n++;
+      }
+    }
+  for (i = 0; i < 100; i++)
+    if ((j = tmpcheats[i]) > 0)
+      printf("There are %d cheats that save %d picoseconds.\n", j, i);
+  printf("%d cheats\n", n);
 }
 
 int main(void) {
-  input("data/input-20.txt");
-  puzzle1();
+  struct pos start, end;
+  input("data/example-20.txt");
+  start = findchar('S');
+  end = findchar('E');
+  trace(start, end);
+  /* puzzle1(); */
+  puzzle2();
   return 0;
 }
