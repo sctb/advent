@@ -90,17 +90,9 @@
     (push end trail)
     (nreverse trail)))
 
-(defun summary (cheats)
-  (maphash (lambda (saved cheats)
-	     (message "There are %s cheats that save %s picoseconds."
-		      cheats saved))
-	   cheats))
-
 (defun cheats (trail picos)
   (let ((count 0)
-	(here trail)
-	;; (cheats (make-hash-table))
-	)
+	(here trail))
     (while here
       (let ((delta 2)
 	    (there (cddr here)))
@@ -109,15 +101,11 @@
 		      (to (car there))
 		      (spent (cheatable from to picos)))
 	    (let ((saved (- delta spent)))
-	      ;; (when (>= saved 50)
-	      ;; 	(let ((n (or (gethash saved cheats) 0)))
-	      ;; 	  (puthash saved (1+ n) cheats)))
 	      (when (>= saved 100)
 		(setq count (1+ count)))))
 	  (setq delta (1+ delta))
 	  (setq there (cdr there))))
       (setq here (cdr here)))
-    ;; (summary cheats)
     count))
 
 (defun puzzle-20a ()
