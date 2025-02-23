@@ -44,7 +44,7 @@
 	((< from to) 1)
 	(t -1)))
 
-(defun presses (from to avoid)
+(defun paths (from to avoid)
   (if (equal from to)
       (list (list ?A))
     (pcase-let ((`(,y . ,x) from))
@@ -54,10 +54,10 @@
 	     (a (cons (+ dy y) x))
 	     (b (cons y (+ dx x))))
 	(unless (or (equal a from) (equal a avoid))
-	  (dolist (path (presses a to avoid))
+	  (dolist (path (paths a to avoid))
 	    (push (cons (if (> dy 0) ?v ?^) path) paths)))
 	(unless (or (equal b from) (equal b avoid))
-	  (dolist (path (presses b to avoid))
+	  (dolist (path (paths b to avoid))
 	    (push (cons (if (> dx 0) ?> ?<) path) paths)))
 	paths))))
 
@@ -66,6 +66,28 @@
 
 (defun dirpress (a b)
   (presses (dirpad a) (dirpad b) (dirpad ?G)))
+
+(defun sequence (presses pad)
+  (let ((paths nil))
+    (while-let ((a (car presses))
+		(b (cadr presses)))
+      (let ((from (funcall pad a))
+	    (to (funcall pad b))
+	    (avoid (funcall pad ?G)))
+       (push (paths from to avoid) paths))
+      (setq presses (cdr presses)))
+    (nreverse paths)))
+
+(defun string-from-chars (chars)
+  (apply #'string chars))
+
+(defun code (code)
+  (let* ((presses (cons ?A (append code nil)))
+	 (paths (sequence presses #'numpad)))
+    (dolist (path paths)
+      (message "PATH:")
+      (dolist (option path)
+	(message " %s" (string-from-chars option))))))
 
 (defun puzzle-21a ()
   (let ((codes (read-codes "data/example-21.txt")))
