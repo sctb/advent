@@ -43,17 +43,15 @@
     (puthash code ways onsen-known)))
 
 (defun possible (design index offset length)
-  (if-let* ((ways (known index offset)))
-      ways
-    (if (eq offset length)
-	1
-      (let ((ways 0))
-	(dolist (towel onsen-towels)
-	  (let ((i (match towel design offset)))
-	    (when (> i 0)
-	      (let ((n (possible design index (+ offset i) length)))
-		(setq ways (+ ways n))))))
-	(seen index offset ways)))))
+  (cond* ((bind* (ways (known index offset))) ways)
+	 ((eq offset length) 1)
+	 (t (let ((ways 0))
+	      (dolist (towel onsen-towels)
+		(let ((i (match towel design offset)))
+		  (when (> i 0)
+		    (let ((n (possible design index (+ offset i) length)))
+		      (setq ways (+ ways n))))))
+	      (seen index offset ways)))))
 
 (defmacro with-onsen (file &rest body)
   (declare (indent 1))
