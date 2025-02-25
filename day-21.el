@@ -106,7 +106,7 @@
     (* (code-number code) (length presses))))
 
 (defun puzzle-21a ()
-  (let ((codes (read-codes "data/example-21.txt"))
+  (let ((codes (read-codes "data/input-21.txt"))
 	(sum 0))
     (dolist (code codes)
       (setq sum (+ sum (complexity code))))
