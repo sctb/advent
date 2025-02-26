@@ -84,8 +84,6 @@ move from ‘from’ to ‘to’, avoiding the blank space indicated by ‘avoid
   (puthash (vector seq times) n memo))
 
 (defun encoded (seq times memo)
-  "Returns the least number of directional keypresses needed to encode
-‘seq’ through a number of indirect keypads denoted by ‘times’."
   (if (eq times 0)
       (length seq)
     (or (know seq times memo)
@@ -116,6 +114,16 @@ move from ‘from’ to ‘to’, avoiding the blank space indicated by ‘avoid
 	(sum 0))
     (dolist (code codes)
       (let* ((len (code code 2))
+	     (n (code-number code))
+	     (complexity (* n len)))
+	(setq sum (+ sum complexity))))
+    sum))
+
+(defun puzzle-21b ()
+  (let ((codes (read-codes "data/input-21.txt"))
+	(sum 0))
+    (dolist (code codes)
+      (let* ((len (code code 25))
 	     (n (code-number code))
 	     (complexity (* n len)))
 	(setq sum (+ sum complexity))))
