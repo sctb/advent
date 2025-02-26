@@ -110,3 +110,13 @@ move from ‘from’ to ‘to’, avoiding the blank space indicated by ‘avoid
 	      (setq len n))))
 	(setq sum (+ sum len))))
     sum))
+
+(defun puzzle-21a ()
+  (let ((codes (read-codes "data/input-21.txt"))
+	(sum 0))
+    (dolist (code codes)
+      (let* ((len (code code 2))
+	     (n (code-number code))
+	     (complexity (* n len)))
+	(setq sum (+ sum complexity))))
+    sum))
