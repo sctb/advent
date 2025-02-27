@@ -40,6 +40,29 @@
     (setq secret (evolve secret)))
   secret)
 
+(defun ones (secret)
+  (mod secret 10))
+
+(defun slide (n window)
+  (let ((len (length window)))
+    (dotimes (i len)
+      (unless (eq i (1- len))
+	(setf (elt window i) (elt window (1+ i)))))
+    (setf (elt window (1- len)) n)))
+
+(defun sell (secret changes times)
+  (catch :sold
+    (let ((window (make-vector 4 nil)))
+      (dotimes (_ times)
+	(let* ((next (evolve secret))
+	       (price (ones next))
+	       (prev (ones secret))
+	       (change (- price prev)))
+	  (setq secret next)
+	  (slide change window)
+	  (when (equal window changes)
+	    (throw :sold price)))))))
+
 (defun puzzle-22a ()
   (let* ((file "data/input-22.txt")
 	 (secrets (read-secrets file))
