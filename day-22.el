@@ -50,19 +50,6 @@
 	(setf (elt window i) (elt window (1+ i)))))
     (setf (elt window (1- len)) n)))
 
-(defun sell (secret changes times)
-  (catch :sold
-    (let ((window (make-vector 4 nil)))
-      (dotimes (_ times)
-	(let* ((next (evolve secret))
-	       (price (ones next))
-	       (prev (ones secret))
-	       (change (- price prev)))
-	  (setq secret next)
-	  (slide change window)
-	  (when (equal window changes)
-	    (throw :sold price)))))))
-
 (defun best (secret times)
   (let ((best (make-hash-table :test 'equal))
 	(window (make-vector 4 nil)))
