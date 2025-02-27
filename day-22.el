@@ -35,6 +35,16 @@
   (setq secret (evolve-2 secret))
   (evolve-3 secret))
 
+(defun next (secret times)
+  (dotimes (_ times)
+    (setq secret (evolve secret)))
+  secret)
+
 (defun puzzle-22a ()
-  (let ((file "data/example-22.txt"))
-    (read-secrets file)))
+  (let* ((file "data/input-22.txt")
+	 (secrets (read-secrets file))
+	 (sum 0))
+    (dolist (secret secrets)
+      (let ((n (next secret 2000)))
+	(setq sum (+ sum n))))
+    sum))
