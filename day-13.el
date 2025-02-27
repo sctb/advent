@@ -76,6 +76,7 @@
   (pcase-let ((`(,ax . ,ay) a)
 	      (`(,bx . ,by) b)
 	      (`(,px . ,py) p))
+    ;; Cramer's rule
     (let ((det (float (- (* ax by) (* ay bx)))))
       (unless (= (fudge det) 0)
 	(let ((na (fudge (/ (- (* by (float px))
