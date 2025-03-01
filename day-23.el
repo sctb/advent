@@ -89,6 +89,9 @@
      table)
     party))
 
+(defun print-party (party)
+  (string-join (sort party) ","))
+
 (defun puzzle-23a ()
   (let* ((file "data/input-23.txt")
 	 (table (make-hash-table :test 'equal))
@@ -97,8 +100,8 @@
     (three-sets table)))
 
 (defun puzzle-23b ()
-  (let* ((file "data/example-23.txt")
+  (let* ((file "data/input-23.txt")
 	 (table (make-hash-table :test 'equal))
 	 (xs (read-connections file)))
     (load-connections xs table)
-    (lan-party table)))
+    (print-party (lan-party table))))
