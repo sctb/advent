@@ -1,28 +1,25 @@
 ;; -*- lexical-binding: t -*-
 
-(defun read-line ()
-  (buffer-substring (point) (line-end-position)))
-
 (defvar wire-rx "\\(.*\\): \\([01]\\)")
 (defvar gate-rx "\\(.*\\) \\([ANDXOR]+\\) \\(.*\\) -> \\(.*\\)")
 
 (defun read-wires ()
-  (let ((wires nil))
+  (let ((wires (make-hash-table :test 'equal)))
     (while (re-search-forward wire-rx nil t)
       (let ((w (match-string 1))
-	    (v (match-string 2)))
-	(push (cons w (read v)) wires)))
-    (nreverse wires)))
+	    (v (read (match-string 2))))
+	(puthash w v wires)))
+    wires))
 
 (defun read-gates ()
-  (let ((gates nil))
+  (let ((gates (make-hash-table :test 'equal)))
     (while (re-search-forward gate-rx nil t)
-      (let ((i1 (match-string 1))
-	    (i2 (match-string 3))
-	    (g (read (match-string 2)))
-	    (o (match-string 4)))
-	(push (list g i1 i2 o) gates)))
-    (nreverse gates)))
+      (let ((in1 (match-string 1))
+	    (in2 (match-string 3))
+	    (op (read (match-string 2)))
+	    (out (match-string 4)))
+	(puthash out (list op in1 in2) gates)))
+    gates))
 
 (defun read-device (file)
   (with-temp-buffer
@@ -34,4 +31,4 @@
 	 (device (read-device file))
 	 (wires (car device))
 	 (gates (cdr device)))
-    (list wires gates)))
+    (hash-table-count gates)))
