@@ -19,8 +19,11 @@
 	  (puthash out (list op in1 in2) wires)))
       wires)))
 
+(defun wire-pos (wire)
+  (read (substring wire 1)))
+
 (defun decimal (wire bit)
-  (let ((shift (read (substring wire 1))))
+  (let ((shift (wire-pos wire)))
     (ash bit shift)))
 
 (defun input (wire wires)
@@ -48,3 +51,29 @@
 		   (setq output (+ output n)))))
 	     wires)
     output))
+
+(defun width (wires)
+  (let ((max 0))
+    (maphash (lambda (wire _)
+	       (when (eq (elt wire 0) ?z)
+		 (let ((n (wire-pos wire)))
+		   (setq max (max n max)))))
+	     wires)
+    (1+ max)))
+
+(defun wire-name (prefix n)
+  (concat prefix (format "%02d" n)))
+
+(defun puzzle-24b ()
+  (let* ((max-lisp-eval-depth 5000)
+	 (file "data/input-24.txt")
+	 (wires (read-device file))
+	 (width (width wires)))
+    (dotimes (n width)
+      (let ((x (input (wire-name "x" n) wires))
+	    (y (input (wire-name "y" n) wires))
+	    (z (input (wire-name "z" n) wires)))
+	(unless (eq z (logxor x y))
+	  (message "SUSPECT %s: %s %s ⇒ %s" n x y z))))
+    width))
+
