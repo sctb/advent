@@ -64,16 +64,48 @@
 (defun wire-name (prefix n)
   (concat prefix (format "%02d" n)))
 
-(defun puzzle-24b ()
-  (let* ((max-lisp-eval-depth 5000)
-	 (file "data/input-24.txt")
-	 (wires (read-device file))
-	 (width (width wires)))
-    (dotimes (n width)
-      (let ((x (input (wire-name "x" n) wires))
-	    (y (input (wire-name "y" n) wires))
-	    (z (input (wire-name "z" n) wires)))
-	(unless (eq z (logxor x y))
-	  (message "SUSPECT %s: %s %s ⇒ %s" n x y z))))
-    width))
+(defun adder (x y c)
+  ;; X Y C ⇒ S C
+  ;; ------------
+  ;; 0 0 0    0 0
+  ;; 0 0 1    1 0
+  ;; 0 1 0    1 0
+  ;; 1 0 0    1 0
+  ;; 0 1 1    0 1
+  ;; 1 0 1    0 1
+  ;; 1 1 0    0 1
+  ;; 1 1 1    1 1
+  (pcase (+ x y c)
+    (0 (cons 0 0))
+    (1 (cons 1 0))
+    (2 (cons 0 1))
+    (3 (cons 1 1))))
 
+(defun inputs (wire wires)
+  (let ((inputs nil)
+	(gate (gethash wire wires)))
+    (unless (eq (car gate) 'VAL)
+      (dolist (in (cdr gate))
+	(push in inputs)
+	(dolist (in (inputs in wires))
+	  (push in inputs))))
+    inputs))
+
+(defun puzzle-24b ()
+  (let* ((file "data/input-24.txt")
+	 (wires (read-device file))
+	 (width (width wires))
+	 (carry 0)
+	 (suspect nil))
+    (dotimes (n (1- width))
+      (let* ((x (input (wire-name "x" n) wires))
+	     (y (input (wire-name "y" n) wires))
+	     (wire (wire-name "z" n))
+	     (z (input wire wires)))
+	(pcase-let ((`(,s . ,c) (adder x y carry)))
+	  (unless (eq z s)
+	    ;; TODO: install something in ‘suspect’, check if there is
+	    ;; a common ancestor to previous failed gates
+	    (message "%s ⇒ %s" wire (inputs wire wires))
+	    (push wire suspect))
+	  (setq carry c))))))
