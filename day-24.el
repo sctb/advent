@@ -107,6 +107,11 @@
     (string-join (sort flat) ",")))
 
 (defun puzzle-24b ()
+  ;; Simulating the adder and finding mismatched bits is helpful, but
+  ;; it doesn't directly identify the necessary swaps (though they are
+  ;; fairly clear from reading the debug output), nor do the default
+  ;; input values trigger a failure for all of the mis-wired gates. It
+  ;; might be better to interrogate the structure itself.
   (let* ((file "data/input-24.txt")
 	 (wires (read-device file))
 	 (width (width wires))
