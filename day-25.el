@@ -100,7 +100,7 @@
       (setq key (cdr key)))))
 
 (defun puzzle-25a ()
-  (let* ((file "data/example-25.txt")
+  (let* ((file "data/input-25.txt")
 	 (grids (read-grids file))
 	 (height (1- (grid-height (car grids))))
 	 (heights (triage grids))
