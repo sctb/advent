@@ -43,9 +43,8 @@ static char spelled(const char *s, int left) {
   int i, n;
   for (i = 0; i < 9; i++) {
     n = strlen(table[i].s);
-    if (n <= left && !memcmp(s, table[i].s, n)) {
+    if (n <= left && !memcmp(s, table[i].s, n))
       return table[i].c;
-    }
   }
   return '\0';
 }
