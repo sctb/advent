@@ -26,3 +26,36 @@
 	  (let ((points (expt 2 (1- n))))
 	    (setq total (+ total points))))))
     total))
+
+(defmacro defmemo (name arglist &rest body)
+  (declare (indent 2))
+  (let ((table (gensym))
+	(result (gensym))
+	(key (car arglist)))
+    `(let ((,table (make-hash-table)))
+       (defun ,name ,arglist
+	 (if-let* ((,result (gethash ,key ,table)))
+	     ,result
+	   (let ((,result (progn ,@body)))
+	     (puthash ,key ,result ,table)))))))
+
+(defmemo tally (cards)
+  (let* ((card (car cards))
+	 (win (car card))
+	 (got (cdr card))
+	 (n (length (seq-intersection win got)))
+	 (total 1))
+    (when (> n 0)
+      (let ((cards (cdr cards)))
+	(dotimes (_ n)
+	  (setq total (+ total (tally cards)))
+	  (setq cards (cdr cards)))))
+    total))
+
+(defun puzzle-4b ()
+  (let ((cards (read-cards "data/input-4.txt"))
+	(total 0))
+    (while cards
+      (setq total (+ total (tally cards)))
+      (setq cards (cdr cards)))
+    total))
