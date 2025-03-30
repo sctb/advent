@@ -34,3 +34,24 @@
 (defun puzzle-6a ()
   (let ((races (read-races "data/input-6.txt")))
     (seq-reduce #'* (mapcar #'beat-race races) 1)))
+
+(defun spacep (c)
+  (eq c ?\s))
+
+(defun read-entry ()
+  (let* ((line (read-line))
+	 (split (cadr (string-split line ":" nil " ")))
+	 (join (concat (seq-remove #'spacep split))))
+    (forward-line)
+    (read join)))
+
+(defun read-race (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (let ((time (read-entry))
+	  (distance (read-entry)))
+      (cons time distance))))
+
+(defun puzzle-6b ()
+  (let ((race (read-race "data/input-6.txt")))
+    (beat-race race)))
