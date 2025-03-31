@@ -71,7 +71,7 @@
 		  (setf (alist-get c cards) (1+ n)))))
 	    hand)
     (if (null cards)
-	7				; five of a kind (jokers)
+	7				; five jokers
       (let* ((counts (mapcar #'cdr cards))
 	     (lead (+ joker (car (sort counts :reverse t)))))
 	(pcase (length cards)
@@ -79,8 +79,7 @@
 	  (4 2)				; one pair
 	  (3 (if (eq lead 3) 4 3))	; three of a kind or two pair
 	  (2 (if (eq lead 4) 6 5))	; four of a kind or full house
-	  (1 7)				; five of a kind
-	  )))))
+	  (1 7))))))			; five of a kind
 
 (defun hand-score-2 (hand)
   (let* ((order "J23456789TQKA")
