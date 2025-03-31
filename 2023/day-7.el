@@ -27,20 +27,21 @@
 	(5 1)				; distinct
 	(4 2)				; one pair
 	(3 (if (eq lead 3) 4 3))	; three of a kind or two pair
-	(2 (if (eq lead 4) 5 4))	; four of a kind or full house
-	(1 6)))))			; five of a kind
+	(2 (if (eq lead 4) 6 5))	; four of a kind or full house
+	(1 7)))))			; five of a kind
 
 (defun hand-score (hand)
-  (let ((order "23456789TJQKA")
-	(high (seq-reverse hand))
-	(score 0))
+  (let* ((order "23456789TJQKA")
+	 (base (length order))
+	 (high (seq-reverse hand))
+	 (score 0))
     (dotimes (i (length hand))
       (let* ((c (elt high i))
-	     (factor (expt 10 i))
+	     (factor (expt base i))
 	     (rank (seq-position order c)))
 	(setq score (+ score (* factor rank)))))
-    (let* ((i (1+ (length hand)))
-	   (factor (expt 10 i))
+    (let* ((i (length hand))
+	   (factor (expt base i))
 	   (type (hand-type hand)))
       (setq score (+ score (* factor type))))
     score))
@@ -49,12 +50,13 @@
   (sort pairs :key (lambda (pair) (hand-score (car pair)))))
 
 (defun puzzle-7a ()
-  (let* ((pairs (read-hands "data/example-7.txt"))
+  (let* ((pairs (read-hands "data/input-7.txt"))
 	 (sorted (sort-hands pairs))
 	 (rank 1)
 	 (winnings 0))
     (dolist (pair sorted)
-      (let ((bid (cdr pair)))
-	(setq winnings (+ winnings (* bid rank))))
+      (let* ((bid (cdr pair))
+	     (win (* bid rank)))
+	(setq winnings (+ winnings win)))
       (setq rank (1+ rank)))
     winnings))
