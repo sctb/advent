@@ -1,2 +1,40 @@
 ;; -*- lexical-binding: t -*-
 
+(defun read-line ()
+  (prog1
+      (buffer-substring (point) (line-end-position))
+    (forward-line)))
+
+(defun read-network (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (let ((insts (read-line)))
+      (forward-line)
+      (let ((rx "\\([A-Z]+\\) = (\\([A-Z]+\\), \\([A-Z]+\\))")
+	    (nodes (make-hash-table)))
+	(while (re-search-forward rx nil t)
+	  (let ((node (read (match-string 1)))
+		(left (read (match-string 2)))
+		(right (read (match-string 3))))
+	    (puthash node (cons left right) nodes)))
+	(cons insts nodes)))))
+
+(defun run-network (insts nodes)
+  (let ((node 'AAA)
+	(steps 0)
+	(i 0)
+	(n (length insts)))
+    (while (not (eq node 'ZZZ))
+      (let ((next (gethash node nodes)))
+	(pcase (elt insts i)
+	  (?L (setq node (car next)))
+	  (?R (setq node (cdr next)))))
+      (setq steps (1+ steps))
+      (setq i (mod (1+ i) n)))
+    steps))
+
+(defun puzzle-8a ()
+  (let* ((network (read-network "data/input-8.txt"))
+	 (insts (car network))
+	 (nodes (cdr network)))
+    (run-network insts nodes)))
