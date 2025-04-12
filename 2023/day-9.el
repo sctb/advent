@@ -28,8 +28,7 @@
 
 (defun sequences (list)
   (let ((seqs (list list)))
-    (while (not (and (zerop (elt list 0))
-		     (zerop (elt list 1))))
+    (while (not (seq-every-p #'zerop list))
       (setq list (deltas list))
       (push list seqs))
     (nreverse seqs)))
