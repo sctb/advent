@@ -39,6 +39,15 @@
 	(when (and (>= j 0) (< j (length row)))
 	  (aref row j))))))
 
+(defun make-grid (height width)
+  (let ((grid (make-vector height nil)))
+    (dotimes (i height)
+      (aset grid i (make-string width ?.)))
+    grid))
+
+(defun grid-like (grid)
+  (make-grid (grid-height grid) (grid-width grid)))
+
 (defun find-animal (grid)
   (catch :found
     (dotimes (i (grid-height grid))
@@ -104,3 +113,25 @@
 	    (setq max (max max count))))
 	(setq fronts next)))
     max))
+
+(defun puzzle-10b ()
+  (let* ((grid (read-grid "data/example-10a.txt"))
+	 (trace (grid-like grid))
+	 (start (find-animal grid))
+	 (steps (make-hash-table :test 'equal))
+	 (fronts nil))
+    (puthash start 0 steps)
+    (dolist (pos (around start))
+      (when (connectedp pos start grid)
+	(puthash pos 1 steps)
+	(push pos fronts)))
+    (while fronts
+      (let ((next nil))
+	(dolist (pos fronts)
+	  (when-let* ((pos (step pos grid steps)))
+	    (push pos next)))
+	(setq fronts next)))
+    (maphash (lambda (pos _)
+	       (gset trace pos ?X))
+	     steps)
+    (insert-grid trace)))
