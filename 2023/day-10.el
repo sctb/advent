@@ -48,6 +48,12 @@
 (defun grid-like (grid)
   (make-grid (grid-height grid) (grid-width grid)))
 
+(defun map-grid (function grid)
+  (dotimes (i (grid-height grid))
+    (dotimes (j (grid-width grid))
+      (let ((pos (cons i j)))
+	(funcall function pos (gref grid pos))))))
+
 (defun find-animal (grid)
   (catch :found
     (dotimes (i (grid-height grid))
@@ -130,20 +136,23 @@
     (gset grid pos value)
     (while area
       (let ((fresh nil))
-	(dolist (pos (around pos))
-	  (when (eq (gref grid pos) old)
-	    (gset grid pos value)
-	    (push pos fresh)))
+	(dolist (pos area)
+	  (dolist (pos (around pos))
+	    (when (eq (gref grid pos) old)
+	      (gset grid pos value)
+	      (push pos fresh))))
 	(setq area fresh)))))
 
 (defun puzzle-10b ()
-  (let* ((grid (read-grid "data/example-10.txt"))
+  (let* ((grid (read-grid "data/example-10b.txt"))
 	 (trace (grid-like grid))
 	 (start (find-animal grid))
 	 (prev start)
 	 (pos nil))
+    (gset trace start ?X)
     (dolist (a (around start))
       (when (and (null pos) (connectedp a start grid))
+	(gset trace a ?X)
 	(setq pos a)))
     (while (not (equal pos start))
       (let ((next (other-end pos prev grid)))
@@ -155,7 +164,12 @@
        (when (eq (gref trace pos) ?.)
 	 (paint-bucket trace pos ?O)))
      trace)
-    ;; run perimeter
-    ;; mark any ?. transitively as ?O for outside
-    ;; count remaining ?. for inside
+    (let ((count 0))
+      (map-grid
+       (lambda (_ value)
+	 (when (eq value ?.)
+	   (setq count (1+ count))))
+       trace)
+      count)
     (insert-grid trace)))
+
