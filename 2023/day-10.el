@@ -54,6 +54,14 @@
       (let ((pos (cons i j)))
 	(funcall function pos (gref grid pos))))))
 
+(defun grid-count (grid value)
+  (let ((count 0))
+    (map-grid (lambda (_ v)
+		(when (eq v value)
+		  (setq count (1+ count))))
+	      grid)
+    count))
+
 (defun find-animal (grid)
   (catch :found
     (dotimes (i (grid-height grid))
@@ -194,7 +202,7 @@
 	(setq area fresh)))))
 
 (defun puzzle-10b ()
-  (let* ((grid (read-grid "data/example-10c.txt"))
+  (let* ((grid (read-grid "data/input-10.txt"))
 	 (trace (grid-like grid))
 	 (start (find-animal grid))
 	 (path (clockwise-path grid start)))
@@ -212,4 +220,7 @@
 	  (setq prev pos)))
       (dolist (pos seeds)
 	(paint-bucket trace pos ?I)))
-    (insert-grid trace)))
+    (insert-grid trace)
+    (grid-count trace ?I)))
+
+;; 353: too low
