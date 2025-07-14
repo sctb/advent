@@ -39,6 +39,8 @@
     (seq-reduce #'+ lasts 0)))
 
 (defun puzzle-9a ()
+  ;; example-9.txt: 114
+  ;; input-9.txt: 2098530125
   (let ((hists (read-histories "data/input-9.txt"))
 	(sum 0))
     (dolist (hist hists)
@@ -56,6 +58,8 @@
     n))
 
 (defun puzzle-9b ()
+  ;; example-9.txt: 2
+  ;; input-9.txt: 1016
   (let ((hists (read-histories "data/input-9.txt"))
 	(sum 0))
     (dolist (hist hists)

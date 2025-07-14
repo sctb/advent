@@ -92,6 +92,8 @@
      (abs (- (cdr a) (cdr b)))))
 
 (defun puzzle-11a ()
+  ;; example-11.txt: 374
+  ;; input-11.txt: 9608724
   (let* ((grid (read-grid "data/input-11.txt"))
 	 (galaxies (expand grid))
 	 (sum 0))
@@ -101,6 +103,7 @@
     sum))
 
 (defun puzzle-11b ()
+  ;; input-11.txt: 904633799472
   (let* ((grid (read-grid "data/input-11.txt"))
 	 (galaxies (expand grid 999999))
 	 (sum 0))

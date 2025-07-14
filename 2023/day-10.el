@@ -89,6 +89,8 @@
     (if (equal other a) b a)))
 
 (defun puzzle-10a ()
+  ;; example-10.txt: 8
+  ;; input-10.txt: 7097
   (let* ((grid (read-grid "data/input-10.txt"))
 	 (start (find-animal grid))
 	 (prev-a start)
@@ -198,6 +200,10 @@
 	(setq area fresh)))))
 
 (defun puzzle-10b ()
+  ;; example-10a.txt: 4
+  ;; example-10b.txt: 8
+  ;; example-10c.txt: 10
+  ;; input-10.txt: 355
   (let* ((grid (read-grid "data/input-10.txt"))
 	 (trace (grid-like grid))
 	 (start (find-animal grid))

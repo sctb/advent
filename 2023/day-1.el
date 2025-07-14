@@ -27,6 +27,8 @@
     (read (string first last))))
 
 (defun puzzle-1a ()
+  ;; example-1.txt: 142
+  ;; input-1.txt: 54940
   (let ((lines (read-lines "data/input-1.txt"))
 	(sum 0))
     (dolist (line lines)
@@ -63,6 +65,8 @@
     (read (string first last))))
 
 (defun puzzle-1b ()
+  ;; example-1b.txt: 281
+  ;; input-1.txt: 54208
   (let ((lines (read-lines "data/input-1.txt"))
 	(sum 0))
     (dolist (line lines)

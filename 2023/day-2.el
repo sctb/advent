@@ -34,6 +34,8 @@
     id))
 
 (defun puzzle-2a ()
+  ;; example-2.txt: 8
+  ;; input-2.txt: 2156
   (let ((games (read-games "data/input-2.txt"))
 	(sum 0))
     (dolist (game games)
@@ -55,6 +57,8 @@
     (seq-reduce #'* (mapcar #'cdr minimum) 1)))
 
 (defun puzzle-2b ()
+  ;; example-2.txt: 2286
+  ;; input-2.txt: 66909
   (let ((games (read-games "data/input-2.txt"))
 	(sum 0))
     (dolist (game games)

@@ -34,6 +34,9 @@
     steps))
 
 (defun puzzle-8a ()
+  ;; example-8.txt: 2
+  ;; example-8a.txt: 6
+  ;; input-8.txt: 12169
   (let* ((network (read-network "data/input-8.txt"))
 	 (insts (car network))
 	 (nodes (cdr network)))
@@ -81,6 +84,8 @@
     (lcm counts)))
 
 (defun puzzle-8b ()
+  ;; example-8b.txt: 6
+  ;; input-8.txt: 12030780859469
   (let* ((network (read-network "data/input-8.txt"))
 	 (insts (car network))
 	 (nodes (cdr network)))

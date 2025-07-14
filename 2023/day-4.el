@@ -16,6 +16,8 @@
     (nreverse cards)))
 
 (defun puzzle-4a ()
+  ;; example-4.txt: 13
+  ;; input-4.txt: 26218
   (let ((cards (read-cards "data/input-4.txt"))
 	(total 0))
     (dolist (card cards)
@@ -53,6 +55,8 @@
     total))
 
 (defun puzzle-4b ()
+  ;; example-4.txt: 30
+  ;; input-4.txt: 9997537
   (let ((cards (read-cards "data/input-4.txt"))
 	(total 0))
     (while cards

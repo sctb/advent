@@ -64,6 +64,8 @@
 	  (throw :done t))))))
 
 (defun puzzle-3a ()
+  ;; example-3.txt: 4361
+  ;; input-3.txt: 520019
   (let ((grid (read-grid "data/input-3.txt"))
 	(sum 0))
     (dotimes (i (grid-height grid))
@@ -92,6 +94,8 @@
   (+ (* (car pos) (grid-height grid)) (cdr pos)))
 
 (defun puzzle-3b ()
+  ;; example-3.txt: 467835
+  ;; input-3.txt: 75519888
   (let ((grid (read-grid "data/input-3.txt"))
 	(gears nil))
     (dotimes (i (grid-height grid))

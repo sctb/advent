@@ -32,6 +32,8 @@
     n))
 
 (defun puzzle-6a ()
+  ;; example-6.txt: 288
+  ;; input-6.txt: 512295
   (let ((races (read-races "data/input-6.txt")))
     (seq-reduce #'* (mapcar #'beat-race races) 1)))
 
@@ -53,5 +55,7 @@
       (cons time distance))))
 
 (defun puzzle-6b ()
-  (let ((race (read-race "data/input-6.txt")))
+  ;; example-6.txt: 71503
+  ;; input-6.txt: 36530883
+  (let ((race (read-race "data/example-6.txt")))
     (beat-race race)))

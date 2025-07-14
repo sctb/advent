@@ -50,6 +50,8 @@
   (sort pairs :key (lambda (pair) (hand-score (car pair)))))
 
 (defun puzzle-7a ()
+  ;; example-7.txt: 6440
+  ;; input-7.txt: 248422077
   (let* ((pairs (read-hands "data/input-7.txt"))
 	 (sorted (sort-hands pairs))
 	 (rank 1)
@@ -101,6 +103,8 @@
   (sort pairs :key (lambda (pair) (hand-score-2 (car pair)))))
 
 (defun puzzle-7b ()
+  ;; example-7.txt: 5905
+  ;; input-7.txt: 249817836
   (let* ((pairs (read-hands "data/input-7.txt"))
 	 (sorted (sort-hands-2 pairs))
 	 (rank 1)

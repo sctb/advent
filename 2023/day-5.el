@@ -40,6 +40,8 @@
   seed)
 
 (defun puzzle-5a ()
+  ;; example-5.txt: 35
+  ;; input-5.txt: 382895070
   (let* ((almanac (read-almanac "data/input-5.txt"))
 	 (seeds (car almanac))
 	 (maps (cdr almanac))
@@ -81,7 +83,9 @@
       (cons scaled passed))))
 
 (defun puzzle-5b ()
-  (let* ((almanac (read-almanac "data/input-5.txt"))
+  ;; example-5.txt: 46
+  ;; input-5.txt: 17729182
+  (let* ((almanac (read-almanac "data/example-5.txt"))
 	 (seeds (pairwise (car almanac)))
 	 (maps (cdr almanac)))
     (dolist (map maps)
