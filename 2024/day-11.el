@@ -35,12 +35,15 @@
     sum))
 
 (defun puzzle-11a ()
+  ;; example-11.txt: 55312
+  ;; input-11.txt: 199982
   (let* ((stones (read-stones "data/input-11.txt"))
 	 (memo (make-hash-table :test 'equal))
 	 (times 25))
     (blink stones times memo)))
 
 (defun puzzle-11b ()
+  ;; input-11.txt: 237149922829154
   (let* ((stones (read-stones "data/input-11.txt"))
 	 (memo (make-hash-table :test 'equal))
 	 (times 75))

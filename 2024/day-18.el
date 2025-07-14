@@ -98,6 +98,8 @@
 	(step memory scores (1+ score) pos end)))))
 
 (defun puzzle-18a ()
+  ;; example-18.txt (first 12 bytes): 22
+  ;; input-18.txt (first 1024 bytes): 382
   (let ((positions (read-positions "data/input-18.txt")))
     (pcase-let ((`(,height . ,width) (dimensions positions)))
       (let* ((max-lisp-eval-depth 5000)
@@ -110,6 +112,8 @@
 	(gref scores end)))))
 
 (defun puzzle-18b ()
+  ;; example-18.txt: 6,1
+  ;; input-18.txt: 6,36
   (let* ((max-lisp-eval-depth 9000)
 	 (positions (read-positions "data/input-18.txt"))
 	 (empty (expt 2 16))

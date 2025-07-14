@@ -86,6 +86,8 @@
     (list max most)))
 
 (defun puzzle-22a ()
+  ;; example-22.txt: 37327623
+  ;; input-22.txt: 17163502021
   (let* ((file "data/input-22.txt")
 	 (secrets (read-secrets file))
 	 (sum 0))
@@ -95,6 +97,8 @@
     sum))
 
 (defun puzzle-22b ()
+  ;; example-22b.txt: 23
+  ;; input-22.txt: 1938
   (let* ((file "data/input-22.txt")
 	 (secrets (read-secrets file))
 	 (totals (make-hash-table :test 'equal))

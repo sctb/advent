@@ -102,6 +102,9 @@
 	  (step grid scores deer))))))
 
 (defun puzzle-16a ()
+  ;; example-16.txt: 7036
+  ;; example-16b.txt: 11048
+  ;; input-16.txt: 95444
   (let* ((max-lisp-eval-depth 5000)
 	 (grid (read-grid "data/input-16.txt"))
 	 (scores (grid-like grid (expt 2 32)))
@@ -139,6 +142,9 @@
     count))
 
 (defun puzzle-16b ()
+  ;; example-16.txt: 45
+  ;; example-16b.txt: 64
+  ;; input-16.txt: 513
   (let* ((max-lisp-eval-depth 5000)
 	 (grid (read-grid "data/input-16.txt"))
 	 (scores (grid-like grid (expt 2 32)))

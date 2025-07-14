@@ -13,6 +13,8 @@
     (nreverse pairs)))
 
 (defun puzzle-1a ()
+  ;; example-1.txt: 11
+  ;; input-1.txt: 1830467
   (let ((left nil)
 	(right nil)
 	(sum 0))
@@ -30,6 +32,8 @@
     sum))
 
 (defun puzzle-1b ()
+  ;; example-1.txt: 31
+  ;; input-1.txt: 26674158
   (let ((left nil)
 	(right nil)
 	(sum 0))

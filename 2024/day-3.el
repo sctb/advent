@@ -3,6 +3,8 @@
 (defvar mul-rx "mul(\\([0-9]\\{1,3\\}\\),\\([0-9]\\{1,3\\}\\))")
 
 (defun puzzle-3a ()
+  ;; example-3.txt: 161
+  ;; input-3.txt: 187825547
   (with-temp-buffer
     (insert-file-contents "data/input-3.txt")
     (let ((sum 0))
@@ -14,6 +16,8 @@
       sum)))
 
 (defun puzzle-3b ()
+  ;; example-3.txt: 48
+  ;; input-3.txt: 85508223
   (with-temp-buffer
     (insert-file-contents "data/input-3.txt")
     (let ((sum 0)

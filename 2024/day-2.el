@@ -41,6 +41,8 @@
     safe))
 
 (defun puzzle-2a ()
+  ;; example-2.txt: 2
+  ;; input-2.txt: 236
   (let ((count 0))
     (dolist (report (read-reports "data/input-2.txt"))
       (when (safe-report report)
@@ -61,6 +63,8 @@
       (seq-some #'safe-report (dampener report))))
 
 (defun puzzle-2b ()
+  ;; example-2.txt: 4
+  ;; input-2.txt: 308
   (let ((count 0))
     (dolist (report (read-reports "data/input-2.txt"))
       (when (safe-report-2 report)

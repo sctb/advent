@@ -45,6 +45,8 @@
       value)))
 
 (defun puzzle-7a ()
+  ;; example-7.txt: 3749
+  ;; input-7.txt: 2654749936343
   (let ((equations (read-equations "data/input-7.txt"))
 	(sum 0))
     (dolist (e equations)
@@ -82,6 +84,8 @@
       value)))
 
 (defun puzzle-7b ()
+  ;; example-7.txt: 11387
+  ;; input-7.txt: 124060392153684
   (let ((equations (read-equations "data/input-7.txt"))
 	(sum 0))
     (dolist (e equations)

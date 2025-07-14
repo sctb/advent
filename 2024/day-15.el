@@ -95,6 +95,9 @@ otherwise do nothing and return NIL"
     sum))
 
 (defun puzzle-15a ()
+  ;; example-15b.txt: 2028
+  ;; example-15.txt: 10092
+  ;; input-15.txt: 1429911
   (let* ((file "data/input-15.txt")
 	 (warehouse (read-warehouse file))
 	 (grid (car warehouse))
@@ -160,6 +163,8 @@ otherwise do nothing and return NIL"
     (scoot grid pos target)))
 
 (defun puzzle-15b ()
+  ;; example-15.txt: 9021
+  ;; input-15.txt: 1453087
   (let* ((file "data/input-15.txt")
 	 (warehouse (read-warehouse file))
 	 (grid (car warehouse))

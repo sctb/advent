@@ -82,6 +82,11 @@
 	(step grid mark (cons i (1- j)) c)))))
 
 (defun puzzle-10a ()
+  ;; example-10b.txt: 2
+  ;; example-10c.txt: 4
+  ;; example-10d.txt: 3
+  ;; example-10.txt: 36
+  ;; input-10.txt: 778
   (let* ((grid (read-grid "data/input-10.txt"))
 	 (heads (trailheads grid))
 	 (sum 0))
@@ -107,6 +112,11 @@
 		  (step-2 grid (cons i (1- j)) c)))))))
 
 (defun puzzle-10b ()
+  ;; example-10f.txt: 3
+  ;; example-10c.txt: 13
+  ;; example-10e.txt: 227
+  ;; example-10.txt: 81
+  ;; input-10.txt: 1925
   (let* ((grid (read-grid "data/input-10.txt"))
 	 (heads (trailheads grid))
 	 (sum 0))

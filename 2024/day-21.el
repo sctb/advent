@@ -110,6 +110,8 @@ move from ‘from’ to ‘to’, avoiding the blank space indicated by ‘avoid
     sum))
 
 (defun puzzle-21a ()
+  ;; example-21.txt: 126384
+  ;; input-21.txt: 137870
   (let ((codes (read-codes "data/input-21.txt"))
 	(sum 0))
     (dolist (code codes)
@@ -120,6 +122,7 @@ move from ‘from’ to ‘to’, avoiding the blank space indicated by ‘avoid
     sum))
 
 (defun puzzle-21b ()
+  ;; input-21.txt: 170279148659464
   (let ((codes (read-codes "data/input-21.txt"))
 	(sum 0))
     (dolist (code codes)

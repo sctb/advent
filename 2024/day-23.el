@@ -93,6 +93,8 @@
   (string-join (sort party) ","))
 
 (defun puzzle-23a ()
+  ;; example-23.txt: 7
+  ;; input-23.txt: 1083
   (let* ((file "data/input-23.txt")
 	 (table (make-hash-table :test 'equal))
 	 (xs (read-connections file)))
@@ -100,6 +102,8 @@
     (three-sets table)))
 
 (defun puzzle-23b ()
+  ;; example-23.txt: co,de,ka,ta
+  ;; input-23.txt: as,bu,cp,dj,ez,fd,hu,it,kj,nx,pp,xh,yu
   (let* ((file "data/input-23.txt")
 	 (table (make-hash-table :test 'equal))
 	 (xs (read-connections file)))

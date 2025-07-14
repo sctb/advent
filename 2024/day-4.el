@@ -59,6 +59,8 @@
    prospect))
 
 (defun puzzle-4a ()
+  ;; example-4.txt: 18
+  ;; input-4.txt: 2543
   (let ((grid (read-grid "data/input-4.txt"))
 	(count 0))
     (dotimes (i (grid-height grid))
@@ -90,6 +92,8 @@
        (?M (,(+ i 1) . ,(+ j 1)))))))
 
 (defun puzzle-4b ()
+  ;; example-4.txt: 9
+  ;; input-4.txt: 1930
   (let ((grid (read-grid "data/input-4.txt"))
 	(count 0))
     (dotimes (i (grid-height grid))

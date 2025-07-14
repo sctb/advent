@@ -57,5 +57,5 @@
 (defun puzzle-6b ()
   ;; example-6.txt: 71503
   ;; input-6.txt: 36530883
-  (let ((race (read-race "data/example-6.txt")))
+  (let ((race (read-race "data/input-6.txt")))
     (beat-race race)))

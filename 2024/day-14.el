@@ -60,6 +60,8 @@
     factor))
 
 (defun puzzle-14a ()
+  ;; example-14.txt (bounds '(11 . 7)): 12
+  ;; input-14.txt (bounds '(101 . 103)): 233709840
   (let ((robots (read-robots "data/input-14.txt"))
 	(bounds '(101 . 103)))
     (simulate robots bounds 100)
@@ -131,6 +133,7 @@
     (and (< n times) (cons n grid))))
 
 (defun puzzle-14b ()
+  ;; input-14.txt: 6620
   (let* ((robots (read-robots "data/input-14.txt"))
 	 (bounds '(101 . 103))
 	 (grid (make-grid (cdr bounds) (car bounds))))

@@ -61,6 +61,8 @@
     sum))
 
 (defun puzzle-9a ()
+  ;; example-9.txt: 1928
+  ;; input-9.txt: 6378826667552
   (let* ((map (read-diskmap "data/input-9.txt"))
 	 (blocks (parse-diskmap map)))
     (compact-disk blocks)
@@ -120,6 +122,8 @@
     blocks))
 
 (defun puzzle-9b ()
+  ;; example-9.txt: 2858
+  ;; input-9.txt: 6413328569890
   (let* ((map (read-diskmap "data/input-9.txt"))
 	 (blocks (parse-diskmap map)))
     (compact-files blocks)

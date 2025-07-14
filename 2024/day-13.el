@@ -59,6 +59,8 @@
     (search a b p)))
 
 (defun puzzle-13a ()
+  ;; example-13.txt: 480
+  ;; input-13.txt: 36838
   (let* ((machines (read-machines "data/input-13.txt"))
 	 (cost 0))
     (dolist (machine machines)
@@ -98,6 +100,7 @@
 	(solve a b (cons x y))))))
 
 (defun puzzle-13b ()
+  ;; input-13.txt: 83029436920891
   (let* ((machines (read-machines "data/input-13.txt"))
 	 (cost 0))
     (dolist (machine machines)

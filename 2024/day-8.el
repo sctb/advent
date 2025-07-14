@@ -98,6 +98,9 @@
     count))
 
 (defun puzzle-8a ()
+  ;; example-8.txt: 14
+  ;; example-8b.txt: 2
+  ;; input-8.txt: 222
   (let* ((grid (read-grid "data/input-8.txt"))
 	 (mark (make-grid (grid-height grid) (grid-width grid)))
 	 (antennas (antennas grid)))
@@ -121,6 +124,9 @@
 	(gset grid (cons (cdr c) (cdr d)) ?#)))))
 
 (defun puzzle-8b ()
+  ;; example-8.txt: 34
+  ;; example-8e.txt: 9
+  ;; input-8.txt: 884
   (let* ((grid (read-grid "data/input-8.txt"))
 	 (mark (make-grid (grid-height grid) (grid-width grid)))
 	 (antennas (antennas grid)))

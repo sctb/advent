@@ -74,7 +74,7 @@
     (push end trail)
     (nreverse trail)))
 
-(defun cheats (trail picos)
+(defun cheats (trail picos min)
   (let ((count 0)
 	(here trail))
     (while here
@@ -85,7 +85,7 @@
 		      (to (car there))
 		      (spent (cheatable from to picos)))
 	    (let ((saved (- delta spent)))
-	      (when (>= saved 100)
+	      (when (>= saved min)
 		(incf count))))
 	  (incf delta)
 	  (setq there (cdr there))))
@@ -93,15 +93,19 @@
     count))
 
 (defun puzzle-20a ()
+  ;; example-20.txt (min 2): 44
+  ;; input-20.txt (min 100): 1502
   (let* ((grid (read-grid "data/input-20.txt"))
 	 (start (find grid ?S))
 	 (end (find grid ?E))
 	 (trail (trace grid start end)))
-    (cheats trail 2)))
+    (cheats trail 2 100)))
 
 (defun puzzle-20b ()
+  ;; example-20.txt (min 50): 285
+  ;; input-20.txt (min 100): 1028136
   (let* ((grid (read-grid "data/input-20.txt"))
 	 (start (find grid ?S))
 	 (end (find grid ?E))
 	 (trail (trace grid start end)))
-    (cheats trail 20)))
+    (cheats trail 20 100)))

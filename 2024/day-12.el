@@ -114,6 +114,10 @@
     (* area perimeter)))
 
 (defun puzzle-12a ()
+  ;; example-12c.txt: 140
+  ;; example-12b.txt: 772
+  ;; example-12.txt: 1930
+  ;; input-12.txt: 1457298
   (let ((grid (read-grid "data/input-12.txt"))
 	(plots (make-hash-table))
 	(total 0))
@@ -186,6 +190,12 @@
     (* area sides)))
 
 (defun puzzle-12b ()
+  ;; example-12c.txt: 80
+  ;; example-12b.txt: 436
+  ;; example-12d.txt: 236
+  ;; example-12e.txt: 368
+  ;; example-12.txt: 1206
+  ;; input-12.txt: 921636
   (let* ((grid (read-grid "data/input-12.txt"))
 	 (mark (grid-like grid))
 	 (plots (make-hash-table))

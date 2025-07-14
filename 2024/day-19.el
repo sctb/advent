@@ -67,6 +67,8 @@
      ,@body))
 
 (defun puzzle-19a ()
+  ;; example-19.txt: 6
+  ;; input-19.txt: 242
   (with-onsen "data/input-19.txt"
     (let ((index 0)
 	  (count 0))
@@ -77,6 +79,8 @@
       count)))
 
 (defun puzzle-19b ()
+  ;; example-19.txt: 16
+  ;; input-19.txt: 595975512785325
   (with-onsen "data/input-19.txt"
     (let ((index 0)
 	  (ways 0))

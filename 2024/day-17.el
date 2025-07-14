@@ -92,6 +92,8 @@
   (setq comp-regc (common-xdv)))
 
 (defun puzzle-17a ()
+  ;; example-17.txt: 4,6,3,5,6,3,5,2,1,0
+  ;; input-17.txt: 2,1,4,0,7,4,0,2,3
   (load-program "data/input-17.txt")
   (while-let ((opcode (elt comp-prog comp-ip)))
     (cond
@@ -157,5 +159,7 @@
 	      (throw :found a))))))))
 
 (defun puzzle-17b ()
+  ;; example-17b.txt: 117440
+  ;; input-17.txt: 258394985014171
   (load-program "data/input-17.txt")
   (search 0 (reverse comp-prog)))

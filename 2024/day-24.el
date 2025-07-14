@@ -42,6 +42,9 @@
 	  ('OR  (if (or (eq a 1) (eq b 1)) 1 0)))))))
 
 (defun puzzle-24a ()
+  ;; example-24.txt: 4
+  ;; example-24b.txt: 2024
+  ;; input-24.txt: 48508229772400
   (let* ((file "data/input-24.txt")
 	 (wires (read-device file))
 	 (output 0))
@@ -112,6 +115,8 @@
   ;; fairly clear from reading the debug output), nor do the default
   ;; input values trigger a failure for all of the mis-wired gates. It
   ;; might be better to interrogate the structure itself.
+  ;; 
+  ;; input-24.txt: cqr,ncd,nfj,qnw,vkg,z15,z20,z37
   (let* ((file "data/input-24.txt")
 	 (wires (read-device file))
 	 (width (width wires))

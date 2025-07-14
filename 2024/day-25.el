@@ -84,6 +84,8 @@
       (setq key (cdr key)))))
 
 (defun puzzle-25a ()
+  ;; example-25.txt: 3
+  ;; input-25.txt: 3114
   (let* ((file "data/input-25.txt")
 	 (grids (read-grids file))
 	 (height (1- (grid-height (car grids))))

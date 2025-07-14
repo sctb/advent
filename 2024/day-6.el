@@ -135,6 +135,8 @@
     count))
 
 (defun puzzle-6a ()
+  ;; example-6.txt: 41
+  ;; input-6.txt: 4826
   (let* ((grid (read-grid "data/input-6.txt"))
 	 (guard (find-guard grid)))
     (trace-guard grid guard)
@@ -186,6 +188,8 @@
     count))
 
 (defun puzzle-6b ()
+  ;; example-6.txt: 6
+  ;; input-6.txt: 1721
   (let* ((g (read-grid "data/input-6.txt"))
 	 (x (copy-grid g))
 	 (guard (find-guard g)))

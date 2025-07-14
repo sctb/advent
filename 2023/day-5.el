@@ -85,7 +85,7 @@
 (defun puzzle-5b ()
   ;; example-5.txt: 46
   ;; input-5.txt: 17729182
-  (let* ((almanac (read-almanac "data/example-5.txt"))
+  (let* ((almanac (read-almanac "data/input-5.txt"))
 	 (seeds (pairwise (car almanac)))
 	 (maps (cdr almanac)))
     (dolist (map maps)

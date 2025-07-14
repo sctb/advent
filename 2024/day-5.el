@@ -43,6 +43,8 @@
       (middle u))))
 
 (defun puzzle-5a ()
+  ;; example-5.txt: 143
+  ;; input-5.txt: 6034
   (let* ((queue (read-print-queue "data/input-5.txt"))
 	 (rules (car queue))
 	 (updates (cdr queue))
@@ -87,6 +89,8 @@
       (middle sorted))))
 
 (defun puzzle-5b ()
+  ;; example-5.txt: 123
+  ;; input-5.txt: 6305
   (let* ((queue (read-print-queue "data/input-5.txt"))
 	 (rules (car queue))
 	 (updates (cdr queue))
