@@ -10,7 +10,7 @@
 	(let* ((l (read (match-string 1)))
 	       (r (read (match-string 2)))
 	       (product (* l r)))
-	  (setq sum (+ sum product))))
+	  (incf sum product)))
       sum)))
 
 (defun puzzle-3b ()
@@ -29,7 +29,7 @@
 			(let* ((l (car (read-from-string (match-string 1))))
 			       (r (car (read-from-string (match-string 2))))
 			       (product (* l r)))
-			  (setq sum (+ sum product))))
+			  (incf sum product)))
 		       (end (goto-char end) (setq enabled nil))
 		       (t (setq more nil)))))
 	      ((re-search-forward "do()" nil t)

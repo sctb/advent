@@ -28,7 +28,7 @@
       (let ((charge i)
 	    (run (- time i)))
 	(when (> (* charge run) distance)
-	  (setq n (1+ n)))))
+	  (incf n))))
     n))
 
 (defun puzzle-6a ()

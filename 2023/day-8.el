@@ -29,8 +29,8 @@
 	(pcase (elt insts i)
 	  (?L (setq node (car next)))
 	  (?R (setq node (cdr next)))))
-      (setq steps (1+ steps))
-      (setq i (mod (1+ i) n)))
+      (setq i (mod (1+ i) n))
+      (incf steps))
     steps))
 
 (defun puzzle-8a ()
@@ -75,8 +75,8 @@
 	    (pcase (elt insts i)
 	      (?L (setq node (car next)))
 	      (?R (setq node (cdr next)))))
-	  (setq steps (1+ steps))
-	  (setq i (mod (1+ i) n)))
+	  (setq i (mod (1+ i) n))
+	  (incf steps))
 	(push steps counts)))
     (lcm counts)))
 

@@ -63,7 +63,7 @@
 	 (cost 0))
     (dolist (machine machines)
       (when-let* ((c (play machine)))
-	(setq cost (+ cost c))))
+	(incf cost c)))
     cost))
 
 (defun fudge (n)
@@ -102,5 +102,5 @@
 	 (cost 0))
     (dolist (machine machines)
       (when-let* ((c (play-hard machine)))
-	(setq cost (+ cost c))))
+	(incf cost c)))
     cost))

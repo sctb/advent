@@ -27,7 +27,7 @@
 	(s (- (length string) offset)))
     (catch :done
       (while (eq (elt prefix i) (elt string (+ i offset)))
-	(setq i (1+ i))
+	(incf i)
 	(when (= i p) (throw :done i))
 	(when (= i s) (throw :done 0)))
       0)))
@@ -50,7 +50,7 @@
 		(let ((i (match towel design offset)))
 		  (when (> i 0)
 		    (let ((n (possible design index (+ offset i) length)))
-		      (setq ways (+ ways n))))))
+		      (incf ways n)))))
 	      (seen index offset ways)))))
 
 (defmacro with-onsen (file &rest body)
@@ -72,8 +72,8 @@
 	  (count 0))
       (dolist (design onsen-designs)
 	(when (> (possible design index 0 (length design)) 0)
-	  (setq count (1+ count)))
-	(setq index (1+ index)))
+	  (incf count))
+	(incf index))
       count)))
 
 (defun puzzle-19b ()
@@ -82,6 +82,6 @@
 	  (ways 0))
       (dolist (design onsen-designs)
 	(let ((n (possible design index 0 (length design))))
-	  (setq ways (+ ways n)))
+	  (incf ways n))
 	(setq index (1+ index)))
       ways)))

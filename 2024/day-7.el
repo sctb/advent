@@ -49,7 +49,7 @@
 	(sum 0))
     (dolist (e equations)
       (when-let* ((value (test-equation e)))
-	(setq sum (+ sum value))))
+	(incf sum value)))
     sum))
 
 (defun run-search-2 (value numbers)
@@ -86,5 +86,5 @@
 	(sum 0))
     (dolist (e equations)
       (when-let* ((value (test-equation-2 e)))
-	(setq sum (+ sum value))))
+	(incf sum value)))
     sum))

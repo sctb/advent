@@ -1,16 +1,17 @@
 ;; -*- lexical-binding: t -*-
 
-(defun read-lines (file)
+(defun read-line ()
+  (buffer-substring (point) (line-end-position)))
+
+(defun read-reports (file)
   (let ((lines nil))
     (with-temp-buffer
       (insert-file-contents file)
       (while (not (eobp))
-	(let ((beg (point)))
-	  (move-end-of-line nil)
-	  (let* ((text (buffer-substring beg (point)))
-		 (line (car (read-from-string (format "(%s)" text)))))
-	    (push line lines))
-	  (forward-char))))
+	(let* ((text (read-line))
+	       (line (car (read-from-string (format "(%s)" text)))))
+	  (push line lines))
+	(forward-line)))
     (nreverse lines)))
 
 (defun safe-delta (a b)
@@ -41,9 +42,9 @@
 
 (defun puzzle-2a ()
   (let ((count 0))
-    (dolist (report (read-lines "data/input-2.txt"))
+    (dolist (report (read-reports "data/input-2.txt"))
       (when (safe-report report)
-	(setq count (1+ count))))
+	(incf count)))
     count))
 
 (defun remove-nth (n seq)
@@ -61,7 +62,7 @@
 
 (defun puzzle-2b ()
   (let ((count 0))
-    (dolist (report (read-lines "data/input-2.txt"))
+    (dolist (report (read-reports "data/input-2.txt"))
       (when (safe-report-2 report)
-	(setq count (1+ count))))
+	(incf count)))
     count))

@@ -105,7 +105,7 @@
      ((eq opcode inst-cdv) (micro-cdv)))
     (if comp-jmp
 	(setq comp-jmp nil)
-      (setq comp-ip (+ comp-ip 2))))
+      (incf comp-ip 2)))
   (let* ((numbers (nreverse comp-out))
 	 (strings (mapcar #'number-to-string numbers)))
     (string-join strings ",")))
@@ -143,7 +143,7 @@
      ((eq opcode inst-out) (micro-out))
      ((eq opcode inst-bdv) (micro-bdv))
      ((eq opcode inst-cdv) (micro-cdv)))
-    (setq comp-ip (+ comp-ip 2))))
+    (incf comp-ip 2)))
 
 (defun search (a rev-prog)
   (if (null rev-prog)

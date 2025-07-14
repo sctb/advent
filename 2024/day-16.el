@@ -26,16 +26,14 @@
   (length (aref grid 0)))
 
 (defun gset (grid pos value)
-  "Ignores out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))
 	  (aset row j value))))))
 
 (defun gref (grid pos)
-  "Returns nil for out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))
@@ -43,18 +41,6 @@
 
 (defun grid-like (grid &optional blank)
   (make-grid (grid-height grid) (grid-width grid) blank))
-
-(defun copy-grid (grid)
-  (let ((new (grid-like grid)))
-    (dotimes (i (grid-height new))
-      (aset new i (copy-sequence (aref grid i))))
-    new))
-
-(defun insert-grid (grid)
-  (seq-do (lambda (row)
-	    (seq-do #'insert row)
-	    (insert ?\n))
-	  grid))
 
 (defun map-grid (function grid)
   (dotimes (i (grid-height grid))

@@ -44,7 +44,7 @@
     (dolist (hist hists)
       (let* ((seqs (sequences hist))
 	     (next (next-right seqs)))
-	(setq sum (+ sum next))))
+	(incf sum next)))
     sum))
 
 (defun next-left (seqs)
@@ -61,5 +61,5 @@
     (dolist (hist hists)
       (let* ((seqs (sequences hist))
 	     (next (next-left seqs)))
-	(setq sum (+ sum next))))
+	(incf sum next)))
     sum))

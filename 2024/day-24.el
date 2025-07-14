@@ -49,7 +49,7 @@
 	       (when (eq (elt wire 0) ?z)
 		 (let* ((bit (operate gate wires))
 			(n (decimal wire bit)))
-		   (setq output (+ output n)))))
+		   (incf output n))))
 	     wires)
     output))
 

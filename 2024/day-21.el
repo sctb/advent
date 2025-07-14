@@ -94,7 +94,7 @@ move from ‘from’ to ‘to’, avoiding the blank space indicated by ‘avoid
 		(let ((n (encoded seq (1- times) memo)))
 		  (when (or (null len) (< n len))
 		    (setq len n))))
-	      (setq sum (+ sum len))))
+	      (incf sum len)))
 	  (save seq times sum memo)))))
 
 (defun code (code times)
@@ -106,7 +106,7 @@ move from ‘from’ to ‘to’, avoiding the blank space indicated by ‘avoid
 	  (let ((n (encoded seq times memo)))
 	    (when (or (null len) (< n len))
 	      (setq len n))))
-	(setq sum (+ sum len))))
+	(incf sum len)))
     sum))
 
 (defun puzzle-21a ()
@@ -116,7 +116,7 @@ move from ‘from’ to ‘to’, avoiding the blank space indicated by ‘avoid
       (let* ((len (code code 2))
 	     (n (code-number code))
 	     (complexity (* n len)))
-	(setq sum (+ sum complexity))))
+	(incf sum complexity)))
     sum))
 
 (defun puzzle-21b ()
@@ -126,5 +126,5 @@ move from ‘from’ to ‘to’, avoiding the blank space indicated by ‘avoid
       (let* ((len (code code 25))
 	     (n (code-number code))
 	     (complexity (* n len)))
-	(setq sum (+ sum complexity))))
+	(incf sum complexity)))
     sum))

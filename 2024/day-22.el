@@ -91,7 +91,7 @@
 	 (sum 0))
     (dolist (secret secrets)
       (let ((n (next secret 2000)))
-	(setq sum (+ sum n))))
+	(incf sum n)))
     sum))
 
 (defun puzzle-22b ()
@@ -103,7 +103,7 @@
     (dolist (secret secrets)
       (let ((best (best secret 2000)))
 	(tally best totals))
-      (setq n (1+ n))
+      (incf n)
       (progress-reporter-update p n))
     (progress-reporter-done p)
     (most totals)))

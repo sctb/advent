@@ -24,7 +24,7 @@
     (while left
       (let ((l (car left))
 	    (r (car right)))
-	(setq sum (+ sum (abs (- r l))))
+	(incf sum (abs (- r l)))
 	(setq left (cdr left))
 	(setq right (cdr right))))
     sum))
@@ -38,5 +38,5 @@
       (push (cdr p) right))
     (dolist (l left)
       (let ((n (seq-count (lambda (x) (eq x l)) right)))
-	(setq sum (+ sum (* l n)))))
+	(incf sum (* l n))))
     sum))

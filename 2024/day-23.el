@@ -46,8 +46,8 @@
 	   (dolist (p ps)
 	     (unless (or (counted-p a (car p))
 			 (counted-p a (cdr p)))
-	       (setq n (1+ n))))
-	   (setq count (+ count n)))))
+	       (incf n)))
+	   (incf count n))))
      table)
     count))
 

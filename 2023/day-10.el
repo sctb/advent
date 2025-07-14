@@ -11,12 +11,6 @@
 	  (forward-line)))
       grid)))
 
-(defun insert-grid (grid)
-  (seq-do (lambda (row)
-	    (insert row)
-	    (insert ?\n))
-	  grid))
-
 (defun grid-height (grid)
   (length grid))
 
@@ -24,16 +18,14 @@
   (length (aref grid 0)))
 
 (defun gset (grid pos value)
-  "Ignores out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))
 	  (aset row j value))))))
 
 (defun gref (grid pos)
-  "Returns nil for out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))
@@ -111,7 +103,7 @@
 	    (setq a pos)
 	  (setq b pos))))
     (while (null finish)
-      (setq count (1+ count))
+      (incf count)
       (let ((next-a (other-end a prev-a grid))
 	    (next-b (other-end b prev-b grid)))
 	(if (equal next-a next-b)

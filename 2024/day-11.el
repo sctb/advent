@@ -17,7 +17,7 @@
 (defun blink-stone (n times memo)
   (if (= times 0)
       1
-    (or (know n times memo)
+    (or (gethash (vector n times) memo)
 	(let ((sum (if (eq n 0)
 		       (blink-stone 1 (1- times) memo)
 		     (let ((len (1+ (floor (log n 10)))))
@@ -26,18 +26,12 @@
 			     (+ (blink-stone (/ n d) (1- times) memo)
 				(blink-stone (mod n d) (1- times) memo)))
 			 (blink-stone (* n 2024) (1- times) memo))))))
-	  (save n times sum memo)))))
-
-(defun know (n times memo)
-  (gethash (vector n times) memo))
-
-(defun save (n times sum memo)
-  (puthash (vector n times) sum memo))
+	  (puthash (vector n times) sum memo)))))
 
 (defun blink (stones times memo)
   (let ((sum 0))
     (dolist (n stones)
-      (setq sum (+ sum (blink-stone n times memo))))
+      (incf sum (blink-stone n times memo)))
     sum))
 
 (defun puzzle-11a ()

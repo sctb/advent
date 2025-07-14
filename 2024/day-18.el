@@ -28,16 +28,14 @@
   (length (aref grid 0)))
 
 (defun gset (grid pos value)
-  "Ignores out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))
 	  (aset row j value))))))
 
 (defun gref (grid pos)
-  "Returns nil for out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))

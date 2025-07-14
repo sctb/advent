@@ -9,19 +9,17 @@
   (buffer-substring (point) (line-end-position)))
 
 (defun read-grid ()
-  (let ((width (- (line-end-position) (point))))
-    (when (> width 0)
-      (let* ((line (line-number-at-pos))
-	     (height (- (line-number-at-pos (next-paragraph)) line))
-	     (grid (make-grid height width)))
-	(dotimes (i height)
-	  (let ((row (read-line)))
-	    (dotimes (j width)
-	      (gset grid (cons i j) (aref row j)))
-	    (forward-line)))
-	(forward-line)
-	(forward-line)
-	grid))))
+  (when (> (- (line-end-position) (point)) 0)
+    (let* ((line (line-number-at-pos))
+	   (height (- (line-number-at-pos (next-paragraph)) line))
+	   (grid (make-vector height nil)))
+      (dotimes (i height)
+	(let ((row (read-line)))
+	  (aset grid i row)
+	  (forward-line)))
+      (forward-line)
+      (forward-line)
+      grid)))
 
 (defun read-grids (file)
   (with-temp-buffer
@@ -31,18 +29,6 @@
 	(push grid grids))
       (nreverse grids))))
 
-(defun make-grid (height width &optional blank)
-  (let ((grid (make-vector height nil)))
-    (dotimes (i height)
-      (aset grid i (make-vector width blank)))
-    grid))
-
-(defun insert-grid (grid)
-  (seq-do (lambda (row)
-	    (seq-do #'insert row)
-	    (insert ?\n))
-	  grid))
-
 (defun grid-height (grid)
   (length grid))
 
@@ -50,16 +36,14 @@
   (length (aref grid 0)))
 
 (defun gset (grid pos value)
-  "Ignores out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))
 	  (aset row j value))))))
 
 (defun gref (grid pos)
-  "Returns nil for out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))
@@ -110,5 +94,5 @@
     (dolist (lock locks)
       (dolist (key keys)
 	(unless (overlap-p lock key height)
-	  (setq fit (1+ fit)))))
+	  (incf fit))))
     fit))

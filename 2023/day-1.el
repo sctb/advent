@@ -30,7 +30,7 @@
   (let ((lines (read-lines "data/input-1.txt"))
 	(sum 0))
     (dolist (line lines)
-      (setq sum (+ sum (value-1 line))))
+      (incf sum (value-1 line)))
     sum))
 
 (defvar spelled-digits
@@ -66,5 +66,5 @@
   (let ((lines (read-lines "data/input-1.txt"))
 	(sum 0))
     (dolist (line lines)
-      (setq sum (+ sum (value-2 line))))
+      (incf sum (value-2 line)))
     sum))

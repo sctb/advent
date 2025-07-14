@@ -24,7 +24,7 @@
 	     (n (length (seq-intersection win got))))
 	(when (> n 0)
 	  (let ((points (expt 2 (1- n))))
-	    (setq total (+ total points))))))
+	    (incf total points)))))
     total))
 
 (defmacro defmemo (name arglist &rest body)
@@ -48,7 +48,7 @@
     (when (> n 0)
       (let ((cards (cdr cards)))
 	(dotimes (_ n)
-	  (setq total (+ total (tally cards)))
+	  (incf total (tally cards))
 	  (setq cards (cdr cards)))))
     total))
 
@@ -56,6 +56,6 @@
   (let ((cards (read-cards "data/input-4.txt"))
 	(total 0))
     (while cards
-      (setq total (+ total (tally cards)))
+      (incf total (tally cards))
       (setq cards (cdr cards)))
     total))

@@ -49,7 +49,7 @@
 	 (sum 0))
     (dolist (u updates)
       (when-let* ((n (check-update u rules)))
-	(setq sum (+ sum n))))
+	(incf sum n)))
     sum))
 
 (defun ruled-by (u rules)
@@ -93,5 +93,5 @@
 	 (sum 0))
     (dolist (u updates)
       (when-let* ((n (sort-update u rules)))
-	(setq sum (+ sum n))))
+	(incf sum n)))
     sum))

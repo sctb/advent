@@ -11,12 +11,6 @@
 	  (forward-line)))
       grid)))
 
-(defun insert-grid (grid)
-  (seq-do (lambda (row)
-	    (insert row)
-	    (insert ?\n))
-	  grid))
-
 (defun grid-height (grid)
   (length grid))
 
@@ -24,16 +18,14 @@
   (length (aref grid 0)))
 
 (defun gset (grid pos value)
-  "Ignores out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))
 	  (aset row j value))))))
 
 (defun gref (grid pos)
-  "Returns nil for out-of-bounds references"
-  (pcase-let* ((`(,i . ,j) pos))
+  (pcase-let ((`(,i . ,j) pos))
     (when (and (>= i 0) (< i (length grid)))
       (let ((row (aref grid i)))
 	(when (and (>= j 0) (< j (length row)))
@@ -84,9 +76,9 @@
 		     (n (read digits))
 		     (size (length digits)))
 		(when (adjacentp grid (cons i j) size)
-		  (setq sum (+ sum n)))
-		(setq j (+ j size)))
-	    (setq j (1+ j))))))
+		  (incf sum n))
+		(incf j size))
+	    (incf j)))))
     sum))
 
 (defun adjacent-gear (grid pos size)
@@ -114,12 +106,12 @@
 		(when-let* ((pos (adjacent-gear grid (cons i j) size))
 			    (id (pos-id grid pos)))
 		  (push n (alist-get id gears)))
-		(setq j (+ j size)))
-	    (setq j (1+ j))))))
+		(incf j size))
+	    (incf j)))))
     (let ((sum 0))
       (dolist (gear gears)
 	(let ((numbers (cdr gear)))
 	  (when (eq (length numbers) 2)
 	    (let ((ratio (apply #'* numbers)))
-	      (setq sum (+ sum ratio))))))
+	      (incf sum ratio)))))
       sum)))
