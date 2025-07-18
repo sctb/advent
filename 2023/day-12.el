@@ -17,8 +17,13 @@
 	(forward-line))
       (nreverse records))))
 
+(defun count-char (char string)
+  (seq-count (lambda (c) (eq c char)) string))
+
 (defun arrangements (springs sizes)
-  1)
+  (let ((ways 1)
+	(chunks (split-string springs "." t " ")))
+    ways))
 
 (defun puzzle-12a ()
   ;; example-12.txt: 21
