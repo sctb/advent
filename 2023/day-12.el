@@ -20,10 +20,35 @@
 (defun count-char (char string)
   (seq-count (lambda (c) (eq c char)) string))
 
+(defun consistent-p (springs sizes)
+  ;; Check to see if ‘springs’ (containing no unknowns) are correctly
+  ;; grouped into contiguous broken springs separated by at least one
+  ;; operational spring
+  (let ((size nil))
+    (catch :inconsistent
+      (dotimes (i (length springs))
+	(let ((c (elt springs i)))
+	  (if (eq c ?.)
+	      (unless (null size)
+		(if (> size 0)
+		    (throw :inconsistent nil)
+		  (setq size nil)))
+	    (when (null size)
+	      (setq size (pop sizes)))
+	    (decf size)
+	    (when (< size 0)
+	      (throw :inconsistent nil)))))
+      (and (null sizes) (or (null size) (zerop size))))))
+
+(consistent-p "#.#.###" '(1 1 3))
+(consistent-p ".#...#....###." '(1 1 3))
+(consistent-p ".#.###.#.######" '(1 3 1 6))
+(consistent-p "####.#...#..." '(4 1 1))
+(consistent-p "#....######..#####." '(1 6 5))
+(consistent-p ".###.##....#" '(3 2 1))
+
 (defun arrangements (springs sizes)
-  (let ((ways 1)
-	(chunks (split-string springs "." t " ")))
-    ways))
+  0)
 
 (defun puzzle-12a ()
   ;; example-12.txt: 21
