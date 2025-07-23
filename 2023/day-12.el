@@ -20,6 +20,52 @@
 (defun count-char (char string)
   (seq-count (lambda (c) (eq c char)) string))
 
+(defun positions (char string)
+  (let ((positions))
+    (dotimes (i (length string))
+      (when (eq char (elt string i))
+	(push i positions)))
+    (nreverse positions)))
+
+(defun range (n)
+  (let ((list nil))
+    (dotimes (i n)
+      (push i list))
+    (nreverse list)))
+
+(let ((cache (make-hash-table)))
+  (defun combinations (k n)
+    ;; "One way is to track k index numbers of the elements selected,
+    ;; starting with {0 .. k−1} (zero-based) or {1 .. k} (one-based) as
+    ;; the first allowed k-combination. Then, repeatedly move to the
+    ;; next allowed k-combination by incrementing the smallest index
+    ;; number for which this would not create two equal index numbers,
+    ;; at the same time resetting all smaller index numbers to their
+    ;; initial values."
+    ;; https://en.wikipedia.org/wiki/Combination#Enumerating_k-combinations
+    (let ((key (* k n)))
+      (or (gethash key cache)
+	  (let* ((index (range k))
+		 (combs (list (copy-sequence index)))
+		 (again t))
+	    (while again
+	      (setq again nil)
+	      (let ((i 0))
+		;; find the smallest index number to increment
+		(while (and (< i (1- k))
+			    (= (elt index i)
+			       (1- (elt index (1+ i)))))
+		  (incf i))
+		(let ((m (elt index i)))
+		  (when (< m (1- n))
+		    (incf (elt index i))
+		    (dotimes (j i)
+		      ;; reset smaller index numbers
+		      (setf (elt index j) j))
+		    (setq again t)
+		    (push (copy-sequence index) combs)))))
+	    (puthash key combs cache))))))
+
 (defun consistent-p (springs sizes)
   ;; Check to see if ‘springs’ (containing no unknowns) are correctly
   ;; grouped into contiguous broken springs separated by at least one
@@ -40,15 +86,13 @@
 	      (throw :inconsistent nil)))))
       (and (null sizes) (or (null size) (zerop size))))))
 
-(consistent-p "#.#.###" '(1 1 3))
-(consistent-p ".#...#....###." '(1 1 3))
-(consistent-p ".#.###.#.######" '(1 3 1 6))
-(consistent-p "####.#...#..." '(4 1 1))
-(consistent-p "#....######..#####." '(1 6 5))
-(consistent-p ".###.##....#" '(3 2 1))
-
 (defun arrangements (springs sizes)
-  0)
+  (let* ((need (apply #'+ sizes))
+	 (have (count-char ?# springs))
+	 (k (- need have))
+	 (slots (positions ?? springs)))
+    (message "%s: %s of SLOTS %s" springs k slots)
+    1))
 
 (defun puzzle-12a ()
   ;; example-12.txt: 21
