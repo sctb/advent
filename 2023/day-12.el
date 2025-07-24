@@ -66,14 +66,19 @@
 		    (push (copy-sequence index) combs)))))
 	    (puthash key combs cache))))))
 
-(defun consistent-p (springs sizes)
+(defun consistent-p (springs sizes broken)
   ;; Check to see if ‘springs’ (containing no unknowns) are correctly
   ;; grouped into contiguous broken springs separated by at least one
   ;; operational spring
-  (let ((size nil))
+  (let ((b (pop broken))
+	(size nil))
     (catch :inconsistent
       (dotimes (i (length springs))
 	(let ((c (elt springs i)))
+	  (when (eq c ??)
+	    (if (eq i b)
+		(setq c ?# b (pop broken))
+	      (setq c ?.)))
 	  (if (eq c ?.)
 	      (unless (null size)
 		(if (> size 0)
@@ -86,31 +91,10 @@
 	      (throw :inconsistent nil)))))
       (and (null sizes) (or (null size) (zerop size))))))
 
-(defun actualize (springs broken fixed)
-  (let ((b (pop broken))
-	(f (pop fixed)))
-    (dotimes (i (length springs))
-      (cond ((eq i b)			; b may be nil
-	     (aset springs i ?#)
-	     (setq b (pop broken)))
-	    ((eq i f)
-	     (aset springs i ?.)
-	     (setq f (pop fixed)))))
-    springs))
-
 (defun at (a b)
   (let ((list nil))
     (dolist (i b)
       (push (elt a i) list))
-    (nreverse list)))
-
-(defun difference (a b)
-  (let ((list nil)
-	(y (pop b)))
-    (dolist (x a)
-      (if (eq x y)
-	  (setq y (pop b))
-	(push x list)))
     (nreverse list)))
 
 (defun arrangements (springs sizes)
@@ -122,10 +106,8 @@
 	 (combs (combinations k n))
 	 (valid 0))
     (dolist (comb combs)
-      (let* ((broken (at slots comb))
-	     (fixed (difference slots broken))
-	     (actual (actualize springs broken fixed)))
-	(when (consistent-p actual sizes)
+      (let ((broken (at slots comb)))
+	(when (consistent-p springs sizes broken)
 	  (incf valid))))
     valid))
 
