@@ -43,28 +43,29 @@
     ;; at the same time resetting all smaller index numbers to their
     ;; initial values."
     ;; https://en.wikipedia.org/wiki/Combination#Enumerating_k-combinations
-    (let ((key (* k n)))
-      (or (gethash key cache)
-	  (let* ((index (range k))
-		 (combs (list (copy-sequence index)))
-		 (again t))
-	    (while again
-	      (setq again nil)
-	      (let ((i 0))
-		;; find the smallest index number to increment
-		(while (and (< i (1- k))
-			    (= (elt index i)
-			       (1- (elt index (1+ i)))))
-		  (incf i))
-		(let ((m (elt index i)))
-		  (when (< m (1- n))
-		    (incf (elt index i))
-		    (dotimes (j i)
-		      ;; reset smaller index numbers
-		      (setf (elt index j) j))
-		    (setq again t)
-		    (push (copy-sequence index) combs)))))
-	    (puthash key combs cache))))))
+    (unless (zerop k)
+      (let ((key (* k n)))
+	(or (gethash key cache)
+	    (let* ((index (range k))
+		   (combs (list (copy-sequence index)))
+		   (again t))
+	      (while again
+		(setq again nil)
+		(let ((i 0))
+		  ;; find the smallest index number to increment
+		  (while (and (< i (1- k))
+			      (= (elt index i)
+				 (1- (elt index (1+ i)))))
+		    (incf i))
+		  (let ((m (elt index i)))
+		    (when (< m (1- n))
+		      (incf (elt index i))
+		      (dotimes (j i)
+			;; reset smaller index numbers
+			(setf (elt index j) j))
+		      (setq again t)
+		      (push (copy-sequence index) combs)))))
+	      (puthash key combs cache)))))))
 
 (defun consistent-p (springs sizes broken)
   ;; Check to see if ‘springs’ (containing no unknowns) are correctly
@@ -86,8 +87,9 @@
 		  (setq size nil)))
 	    (when (null size)
 	      (setq size (pop sizes)))
-	    (decf size)
-	    (when (< size 0)
+	    (when size
+	      (decf size))
+	    (when (and size (< size 0))
 	      (throw :inconsistent nil)))))
       (and (null sizes) (or (null size) (zerop size))))))
 
@@ -105,18 +107,22 @@
 	 (n (length slots))
 	 (combs (combinations k n))
 	 (valid 0))
-    (dolist (comb combs)
-      (let ((broken (at slots comb)))
-	(when (consistent-p springs sizes broken)
-	  (incf valid))))
+    (if (null combs)
+	(when (consistent-p springs sizes nil)
+	  (incf valid))
+      (dolist (comb combs)
+	(let ((broken (at slots comb)))
+	  (when (consistent-p springs sizes broken)
+	    (incf valid)))))
     valid))
 
 (defun puzzle-12a ()
   ;; example-12.txt: 21
-  ;; input-12.txt: 
-  (let* ((file "data/example-12.txt")
+  ;; input-12.txt: too low (5766)
+  (let* ((file "data/input-12.txt")
 	 (records (read-records file))
 	 (count 0))
     (dolist (row records)
       (incf count (arrangements (car row) (cdr row))))
     count))
+
