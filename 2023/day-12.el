@@ -33,7 +33,7 @@
       (push i list))
     (nreverse list)))
 
-(let ((cache (make-hash-table)))
+(let ((cache (make-hash-table :test 'equal)))
   (defun combinations (k n)
     ;; "One way is to track k index numbers of the elements selected,
     ;; starting with {0 .. k−1} (zero-based) or {1 .. k} (one-based) as
@@ -43,29 +43,28 @@
     ;; at the same time resetting all smaller index numbers to their
     ;; initial values."
     ;; https://en.wikipedia.org/wiki/Combination#Enumerating_k-combinations
-    (unless (zerop k)
-      (let ((key (* k n)))
-	(or (gethash key cache)
-	    (let* ((index (range k))
-		   (combs (list (copy-sequence index)))
-		   (again t))
-	      (while again
-		(setq again nil)
-		(let ((i 0))
-		  ;; find the smallest index number to increment
-		  (while (and (< i (1- k))
-			      (= (elt index i)
-				 (1- (elt index (1+ i)))))
-		    (incf i))
-		  (let ((m (elt index i)))
-		    (when (< m (1- n))
-		      (incf (elt index i))
-		      (dotimes (j i)
-			;; reset smaller index numbers
-			(setf (elt index j) j))
-		      (setq again t)
-		      (push (copy-sequence index) combs)))))
-	      (puthash key combs cache)))))))
+    (let ((key (cons k n)))
+      (or (gethash key cache)
+	  (let* ((index (range k))
+		 (combs (list (copy-sequence index)))
+		 (again t))
+	    (while again
+	      (setq again nil)
+	      (let ((i 0))
+		;; find the smallest index number to increment
+		(while (and (< i (1- k))
+			    (= (elt index i)
+			       (1- (elt index (1+ i)))))
+		  (incf i))
+		(let ((m (elt index i)))
+		  (when (< m (1- n))
+		    (incf (elt index i))
+		    (dotimes (j i)
+		      ;; reset smaller index numbers
+		      (setf (elt index j) j))
+		    (setq again t)
+		    (push (copy-sequence index) combs)))))
+	    (puthash key combs cache))))))
 
 (defun consistent-p (springs sizes broken)
   ;; Check to see if ‘springs’ (containing no unknowns) are correctly
@@ -103,26 +102,30 @@
   (let* ((need (apply #'+ sizes))
 	 (have (count-char ?# springs))
 	 (k (- need have))
-	 (slots (positions ?? springs))
-	 (n (length slots))
-	 (combs (combinations k n))
-	 (valid 0))
-    (if (null combs)
-	(when (consistent-p springs sizes nil)
-	  (incf valid))
-      (dolist (comb combs)
-	(let ((broken (at slots comb)))
-	  (when (consistent-p springs sizes broken)
-	    (incf valid)))))
-    valid))
+	 (slots (positions ?? springs)))
+    (if (or (zerop k) (null slots))
+	1
+      (let* ((n (length slots))
+	     (combs (combinations k n))
+	     (valid 0))
+	(dolist (comb combs)
+	  (let ((broken (at slots comb)))
+	    (when (consistent-p springs sizes broken)
+	      (incf valid))))
+	valid))))
 
 (defun puzzle-12a ()
   ;; example-12.txt: 21
-  ;; input-12.txt: too low (5766)
+  ;; input-12.txt: 7007
   (let* ((file "data/input-12.txt")
 	 (records (read-records file))
+	 (n 0)
+	 (p (make-progress-reporter "Arranging" n (length records)))
 	 (count 0))
     (dolist (row records)
-      (incf count (arrangements (car row) (cdr row))))
+      (incf count (arrangements (car row) (cdr row)))
+      (incf n)
+      (progress-reporter-update p n))
+    (progress-reporter-done p)
     count))
 
