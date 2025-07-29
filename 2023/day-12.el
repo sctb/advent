@@ -33,38 +33,39 @@
       (push i list))
     (nreverse list)))
 
-(let ((cache (make-hash-table :test 'equal)))
-  (defun combinations (k n)
-    ;; "One way is to track k index numbers of the elements selected,
-    ;; starting with {0 .. k−1} (zero-based) or {1 .. k} (one-based) as
-    ;; the first allowed k-combination. Then, repeatedly move to the
-    ;; next allowed k-combination by incrementing the smallest index
-    ;; number for which this would not create two equal index numbers,
-    ;; at the same time resetting all smaller index numbers to their
-    ;; initial values."
-    ;; https://en.wikipedia.org/wiki/Combination#Enumerating_k-combinations
-    (let ((key (cons k n)))
-      (or (gethash key cache)
-	  (let* ((index (range k))
-		 (combs (list (copy-sequence index)))
-		 (again t))
-	    (while again
-	      (setq again nil)
-	      (let ((i 0))
-		;; find the smallest index number to increment
-		(while (and (< i (1- k))
-			    (= (elt index i)
-			       (1- (elt index (1+ i)))))
-		  (incf i))
-		(let ((m (elt index i)))
-		  (when (< m (1- n))
-		    (incf (elt index i))
-		    (dotimes (j i)
-		      ;; reset smaller index numbers
-		      (setf (elt index j) j))
-		    (setq again t)
-		    (push (copy-sequence index) combs)))))
-	    (puthash key combs cache))))))
+(defvar comb-cache (make-hash-table :test 'equal))
+
+(defun combinations (k n)
+  ;; "One way is to track k index numbers of the elements selected,
+  ;; starting with {0 .. k−1} (zero-based) or {1 .. k} (one-based) as
+  ;; the first allowed k-combination. Then, repeatedly move to the
+  ;; next allowed k-combination by incrementing the smallest index
+  ;; number for which this would not create two equal index numbers,
+  ;; at the same time resetting all smaller index numbers to their
+  ;; initial values."
+  ;; https://en.wikipedia.org/wiki/Combination#Enumerating_k-combinations
+  (let ((key (cons k n)))
+    (or (gethash key comb-cache)
+	(let* ((index (range k))
+	       (combs (list (copy-sequence index)))
+	       (again t))
+	  (while again
+	    (setq again nil)
+	    (let ((i 0))
+	      ;; find the smallest index number to increment
+	      (while (and (< i (1- k))
+			  (= (elt index i)
+			     (1- (elt index (1+ i)))))
+		(incf i))
+	      (let ((m (elt index i)))
+		(when (< m (1- n))
+		  (incf (elt index i))
+		  (dotimes (j i)
+		    ;; reset smaller index numbers
+		    (setf (elt index j) j))
+		  (setq again t)
+		  (push (copy-sequence index) combs)))))
+	  (puthash key combs comb-cache)))))
 
 (defun consistent-p (springs sizes broken)
   ;; Check to see if ‘springs’ (containing no unknowns) are correctly
@@ -118,6 +119,7 @@
   ;; example-12.txt: 21
   ;; input-12.txt: 7007
   (let* ((file "data/input-12.txt")
+	 (comb-cache (make-hash-table :test 'equal))
 	 (records (read-records file))
 	 (n 0)
 	 (p (make-progress-reporter "Arranging" n (length records)))
